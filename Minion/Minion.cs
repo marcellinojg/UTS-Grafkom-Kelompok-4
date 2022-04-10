@@ -10,6 +10,8 @@ namespace Minion
 {
     internal class Minion
     {
+
+        List<float> vertices_temp = new List<float>();
         Asset3d body;
         Asset3d eyeWhiteLeft;
         Asset3d eyeWhiteRight;
@@ -18,35 +20,51 @@ namespace Minion
         Asset3d glassesLeft;
         Asset3d glassesRight;
         Asset3d glassesStrap;
+        Asset3d suit;
+        Asset3d rightHand;
+        Asset3d leftHand;
+        Asset3d rightArm;
+        Asset3d leftArm;
+        Asset3d leftLeg;
+        Asset3d rightLeg;
+        Asset3d leftFoot;
+        Asset3d rightFoot;
+
+        Asset2d hairs;
+        
         public Minion()
         {
+
+            //Eyes and Glasses
             glassesLeft = new Asset3d();
-            glassesLeft.createEllipsoid(-0.22f, 0.3f, 0.5f, 0.25f, 0.25f, 0.25f);
+            glassesLeft.createEllipsoid(-0.22f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
 
             glassesRight = new Asset3d();
-            glassesRight.createEllipsoid(0.22f, 0.3f, 0.5f, 0.25f, 0.25f, 0.25f);
+            glassesRight.createEllipsoid(0.22f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
 
             glassesStrap = new Asset3d();
-            glassesStrap.createCylinder(0.0f, 0.18f, 0.0f, 0.6f, 0.2f);
+            glassesStrap.createCylinder(0.0f, 0.25f, 0.0f, 0.6f, 0.15f);
 
             eyeWhiteLeft = new Asset3d();
-            eyeWhiteLeft.createEllipsoid(-0.22f, 0.3f, 0.5f, 0.2f, 0.2f, 0.2f);
+            eyeWhiteLeft.createEllipsoid(-0.22f, 0.3f, 0.47f, 0.2f, 0.2f, 0.2f);
 
             eyeWhiteRight = new Asset3d();
-            eyeWhiteRight.createEllipsoid(0.22f, 0.3f, 0.5f, 0.2f, 0.2f, 0.2f);
+            eyeWhiteRight.createEllipsoid(0.22f, 0.3f, 0.47f, 0.2f, 0.2f, 0.2f);
 
             eyeLeft = new Asset3d();
-            eyeLeft.createEllipsoid(-0.22f, 0.3f, 0.63f, 0.1f, 0.1f, 0.1f);
+            eyeLeft.createEllipsoid(-0.22f, 0.3f, 0.6f, 0.1f, 0.1f, 0.1f);
 
             eyeLeft.children.Add(new Asset3d());
-            eyeLeft.children[0].createEllipsoid(-0.22f, 0.3f, 0.63f, 0.05f, 0.05f, 0.05f);
+            eyeLeft.children[0].createEllipsoid(-0.22f, 0.3f, 0.67f, 0.05f, 0.05f, 0.05f);
 
             eyeRight = new Asset3d();
-            eyeRight.createEllipsoid(0.22f, 0.3f, 0.63f,0.1f, 0.1f, 0.1f);
+            eyeRight.createEllipsoid(0.22f, 0.3f, 0.6f,0.1f, 0.1f, 0.1f);
 
             eyeRight.children.Add(new Asset3d());
-            eyeRight.children[0].createEllipsoid(0.22f, 0.3f, 0.63f, 0.05f, 0.05f, 0.05f);
+            eyeRight.children[0].createEllipsoid(0.22f, 0.3f, 0.67f, 0.05f, 0.05f, 0.05f);
 
+
+            //Main Body and Suits
             body = new Asset3d();
             body.createCylinder(0.0f, -0.5f, 0.0f, 0.55f, 1.0f);
 
@@ -56,10 +74,80 @@ namespace Minion
             body.children.Add(new Asset3d());
             body.children[1].createBottomHalfSphere(0.0f, -0.51f, 0.0f, 0.55f);
 
+
+            suit = new Asset3d();
+            suit.createBottomHalfSphere(0.0f, -0.51f, 0.0f, 0.57f);
+
+            //Hairs
+            hairs = new Asset2d();
+            hairs.addCoordinatesToVertices(0.0f, 0.0f);
+            hairs.addCoordinatesToVertices(0.3f, 0.2f);
+            hairs.addCoordinatesToVertices(0.5f, 0.4f);
+            hairs.CreateCurveBezier();
+            
+            
+
+
+            //Arms
+            rightArm = new Asset3d();
+            rightArm.createHorizontalCylinder(0.5f,-0.2f, 0.0f, 0.03f, 0.4f);
+
+            leftArm = new Asset3d();
+            leftArm.createHorizontalCylinder(-0.9f, -0.2f, 0.0f, 0.03f, 0.4f);
+
+            
+            //Hands
+            leftHand = new Asset3d();
+            leftHand.createEllipsoid(-0.9f, -0.2f, 0.0f, 0.04f, 0.05f, 0.05f);
+
+            rightHand = new Asset3d();
+            rightHand.createEllipsoid(0.9f, -0.2f, 0.0f, 0.04f, 0.05f, 0.05f);
+
+            //Legs
+            leftLeg = new Asset3d();
+            leftLeg.createCylinder(-0.2f, -1.2f, 0.0f, 0.08f, 0.3f);
+
+            rightLeg = new Asset3d();
+            rightLeg.createCylinder(0.2f, -1.2f, 0.0f, 0.08f, 0.3f);
+
+            //Foots
+            leftFoot = new Asset3d();
+            leftFoot.createEllipsoid(-0.2f, -1.2f, 0.05f,0.08f,0.08f,0.12f);
+
+            rightFoot = new Asset3d();
+            rightFoot.createEllipsoid(0.2f, -1.2f, 0.05f, 0.08f, 0.08f, 0.12f);
+            
+            //Fingers left
+            leftHand.children.Add(new Asset3d());
+            leftHand.children[0].createEllipsoid(-0.95f, -0.20f, 0.0f, 0.04f, 0.025f, 0.025f);
+
+            leftHand.children.Add(new Asset3d());
+            leftHand.children[1].createEllipsoid(-0.95f, -0.23f, 0.0f, 0.04f, 0.025f, 0.025f);
+
+            leftHand.children.Add(new Asset3d());
+            leftHand.children[2].createEllipsoid(-0.95f, -0.17f, 0.0f, 0.04f, 0.025f, 0.025f);
+
+            
+            //Fingers right
+            rightHand.children.Add(new Asset3d());
+            rightHand.children[0].createEllipsoid(0.95f, -0.20f, 0.0f, 0.04f, 0.025f, 0.025f);
+
+            rightHand.children.Add(new Asset3d());
+            rightHand.children[1].createEllipsoid(0.95f, -0.23f, 0.0f, 0.04f, 0.025f, 0.025f);
+
+            rightHand.children.Add(new Asset3d());
+            rightHand.children[2].createEllipsoid(0.95f, -0.17f, 0.0f, 0.04f, 0.025f, 0.025f);
+
+
+            //Inheritances
+            leftArm.children.Add(leftHand);
+            rightArm.children.Add(rightHand);
+
             eyeWhiteLeft.children.Add(eyeLeft);
             eyeWhiteRight.children.Add(eyeRight);
 
-            
+
+
 
 
         }
@@ -71,7 +159,8 @@ namespace Minion
 
             glassesRight.Load(Constants.path + "gray.vert", Constants.path + "gray.frag", 800, 800);
 
-            glassesStrap.Load(Constants.path + "gray.vert", Constants.path + "gray.frag", 800, 800);
+            glassesStrap.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
+            GL.Uniform4(GL.GetUniformLocation(glassesStrap._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
 
             eyeWhiteLeft.Load(Constants.path + "white_eye.vert", Constants.path + "white_eye.frag", 800, 800);
 
@@ -79,28 +168,92 @@ namespace Minion
 
             body.Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
 
+            body.children[1].Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
+
+            suit.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+
             eyeLeft.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
             GL.Uniform4(GL.GetUniformLocation(eyeLeft._shader.Handle, "ourColor"), 0.7f, 0.296f, 0.0f, 1.0f);
 
             eyeRight.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
             GL.Uniform4(GL.GetUniformLocation(eyeRight._shader.Handle, "ourColor"), 0.7f, 0.296f, 0.0f, 1.0f);
 
+            rightArm.Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
+            
+
+            leftArm.Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
+
+            
+            leftHand.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
+            GL.Uniform4(GL.GetUniformLocation(leftHand._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+
+            rightHand.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
+            GL.Uniform4(GL.GetUniformLocation(rightHand._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+
+
+            //leftArm.rotate(leftArm._centerPosition, leftArm._euler[2], -75);
+            //rightArm.rotate(rightArm._centerPosition, rightArm._euler[2], 75);
+
+            
+
+            //rightHand.children[0].rotate(rightHand.children[0]._centerPosition, rightHand._euler[2], 0);
+            //rightHand.children[1].rotate(rightHand.children[1]._centerPosition, rightHand._euler[2], 45);
+            //rightHand.children[2].rotate(rightHand.children[2]._centerPosition, rightHand._euler[2], -45);
+
+
+            leftLeg.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+
+            rightLeg.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+
+            rightFoot.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
+            GL.Uniform4(GL.GetUniformLocation(rightFoot._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+
+            leftFoot.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
+            GL.Uniform4(GL.GetUniformLocation(leftFoot._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+
+            hairs.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag");
+            GL.Uniform4(GL.GetUniformLocation(hairs._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+
+
 
 
         }
+
+        
         public void Render(Matrix4 temp)
         {
-            body.Render(temp);
-            glassesLeft.Render(temp);
-            glassesRight.Render(temp);
-            glassesStrap.Render(temp);
-            eyeWhiteLeft.Render(temp);
-            eyeWhiteRight.Render(temp);
-            eyeLeft.Render(temp);
-            eyeRight.Render(temp);
+            //body.Render(temp);
+            //suit.Render(temp);
+            //rightArm.Render(temp);
+
+            //leftArm.Render(temp);
+
+            //leftHand.Render(temp);
+            //rightHand.Render(temp);
+
+            //eyeWhiteLeft.Render(temp);
+            //eyeWhiteRight.Render(temp);
+            //eyeLeft.Render(temp);
+            //eyeRight.Render(temp);
+            //glassesStrap.Render(temp);
+            //glassesLeft.Render(temp);
+            //glassesRight.Render(temp);
+
             
+
+            //leftLeg.Render(temp);
+            //rightLeg.Render(temp);
+
+            //leftFoot.Render(temp);
+            //rightFoot.Render(temp);
+
+            hairs.Render();
+
             
-            
+
+
+
+
 
 
 

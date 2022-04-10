@@ -16,20 +16,16 @@ namespace Minion
     internal class Asset3d
     {
         List<Vector3> _vertices = new List<Vector3>();
-        List<float> _vertices_for_bezier= new List<float>();
-        
-        List<uint> _indices = new List<uint>();
         int _vertexBufferObject;
         int _vertexArrayObject;
-        int _elementBufferObject;
         Matrix4 _view;
         Matrix4 _projection;
         Matrix4 _model;
         public Shader _shader;
         public Vector3 _centerPosition;
         public List<Asset3d> children;
-        int indexs;
-        int[] _pascal = { };
+        public List<Vector3> _euler;
+  
 
         public Asset3d()
         {
@@ -41,25 +37,112 @@ namespace Minion
             _model = Matrix4.Identity;
             _centerPosition = new Vector3(0, 0, 0);
             children = new List<Asset3d>();
-            indexs = 0;
+            _euler = new List<Vector3>();
+            _euler.Add(new Vector3(1, 0, 0));
+
+            _euler.Add(new Vector3(0, 1, 0));
+
+            _euler.Add(new Vector3(0, 0, 1));
+        }
+
+        
+
+        public void rotate(Vector3 pivot, Vector3 vector, float angle)
+        {
+            //pivot -> mau rotate di titik mana
+            //vector -> mau rotate di sumbu apa? (x,y,z)
+            //angle -> rotatenya berapa derajat?
+            var real_angle = angle;
+            angle = MathHelper.DegreesToRadians(angle);
+
+            //mulai ngerotasi
+            for (int i = 0; i < _vertices.Count; i++)
+            {
+                _vertices[i] = getRotationResult(pivot, vector, angle, _vertices[i]);
+            }
+            //rotate the euler direction
+            for (int i = 0; i < 3; i++)
+            {
+                _euler[i] = getRotationResult(pivot, vector, angle, _euler[i], true);
+
+                //NORMALIZE
+                //LANGKAH - LANGKAH
+                //length = akar(x^2+y^2+z^2)
+                float length = (float)Math.Pow(Math.Pow(_euler[i].X, 2.0f) + Math.Pow(_euler[i].Y, 2.0f) + Math.Pow(_euler[i].Z, 2.0f), 0.5f);
+                Vector3 temporary = new Vector3(0, 0, 0);
+                temporary.X = _euler[i].X / length;
+                temporary.Y = _euler[i].Y / length;
+                temporary.Z = _euler[i].Z / length;
+                _euler[i] = temporary;
+            }
+            _centerPosition = getRotationResult(pivot, vector, angle, _centerPosition);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Count * Vector3.SizeInBytes,
+                _vertices.ToArray(), BufferUsageHint.StaticDraw);
+            foreach (var item in children)
+            {
+                item.rotate(pivot, vector, real_angle);
+            }
+        }
+        public Vector3 getRotationResult(Vector3 pivot, Vector3 vector, float angle, Vector3 point, bool isEuler = false)
+        {
+            Vector3 temp, newPosition;
+
+            if (isEuler)
+            {
+                temp = point;
+            }
+            else
+            {
+                temp = point - pivot;
+            }
+
+            newPosition.X =
+                temp.X * (float)(Math.Cos(angle) + Math.Pow(vector.X, 2.0f) * (1.0f - Math.Cos(angle))) +
+                temp.Y * (float)(vector.X * vector.Y * (1.0f - Math.Cos(angle)) - vector.Z * Math.Sin(angle)) +
+                temp.Z * (float)(vector.X * vector.Z * (1.0f - Math.Cos(angle)) + vector.Y * Math.Sin(angle));
+
+            newPosition.Y =
+                temp.X * (float)(vector.X * vector.Y * (1.0f - Math.Cos(angle)) + vector.Z * Math.Sin(angle)) +
+                temp.Y * (float)(Math.Cos(angle) + Math.Pow(vector.Y, 2.0f) * (1.0f - Math.Cos(angle))) +
+                temp.Z * (float)(vector.Y * vector.Z * (1.0f - Math.Cos(angle)) - vector.X * Math.Sin(angle));
+
+            newPosition.Z =
+                temp.X * (float)(vector.X * vector.Z * (1.0f - Math.Cos(angle)) - vector.Y * Math.Sin(angle)) +
+                temp.Y * (float)(vector.Y * vector.Z * (1.0f - Math.Cos(angle)) + vector.X * Math.Sin(angle)) +
+                temp.Z * (float)(Math.Cos(angle) + Math.Pow(vector.Z, 2.0f) * (1.0f - Math.Cos(angle)));
+
+            if (isEuler)
+            {
+                temp = newPosition;
+            }
+            else
+            {
+                temp = newPosition + pivot;
+            }
+            return temp;
         }
 
         public void Load(string shadervert, string shaderfrag, float Size_x, float Size_y)
         {
+            
             _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Count * Vector3.SizeInBytes, _vertices.ToArray(),BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Count * Vector3.SizeInBytes, _vertices.ToArray(), BufferUsageHint.StaticDraw);
 
             _vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(_vertexArrayObject);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
 
+            GL.Enable(EnableCap.DepthTest);
+
             _shader = new Shader(shadervert, shaderfrag);
             _shader.Use();
 
             _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-            _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Size_x / (float)Size_y, 0.5f, 100.0f);
+            _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), Size_x / (float)Size_y, 0.5f, 100.0f);
             foreach (var item in children)
             {
                 item.Load(shadervert,shaderfrag,Size_x,Size_y);
@@ -77,7 +160,7 @@ namespace Minion
             _shader.SetMatrix4("view", _view);
             _shader.SetMatrix4("projection", _projection);
 
-            GL.DrawArrays(PrimitiveType.LineStrip, 0, _vertices.Count);
+            GL.DrawArrays(PrimitiveType.LineLoop, 0, _vertices.Count);
 
             foreach(var item in children)
             {
@@ -85,11 +168,16 @@ namespace Minion
             }
         }
 
+
+        
         public void createCylinder(float center_x, float center_y, float center_z, float radius, float height)
         {
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
             _centerPosition.Z = center_z;
+
+           
+
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
@@ -106,11 +194,34 @@ namespace Minion
 
         }
 
+        public void createHorizontalCylinder(float center_x, float center_y, float center_z, float radius, float height)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+            for (float t = 0; t <= height; t += 0.001f)
+            {
+                for (float deg = 0; deg <= 360; deg++)
+                {
+                    temp_vector.Y = center_y + radius * (float)Math.Cos(deg);
+                    temp_vector.X = center_x + t;
+                    temp_vector.Z = center_z + radius * (float)Math.Sin(deg);
+                    _vertices.Add(temp_vector);
+                }
+                
+
+            }
+        }
+
         public void createTopHalfSphere(float center_x, float center_y, float center_z, float radius)
         {
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
             _centerPosition.Z = center_z;
+            
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
@@ -148,58 +259,7 @@ namespace Minion
         }
 
 
-        public void addCoordinatesToVertices(float x, float y, float z)
-        {
-            _vertices_for_bezier.Add(x);
-            _vertices_for_bezier.Add(y);
-            _vertices_for_bezier.Add(z);
-            indexs++;
-        }
-        public List<float> createCurveBezier()
-        {
-            List<float> _vertices_bezier = new List<float>();
-            List<int> pascal = getRow(indexs - 1);
-            _pascal = pascal.ToArray();
-            for (float t = 0; t <= 1.0f; t += 0.01f)
-            {
-                Vector2 p = getP(indexs, t);
-                _vertices_bezier.Add(p.X);
-                _vertices_bezier.Add(p.Y);
-                _vertices_bezier.Add(0);
-            }
-
-            return _vertices_bezier;
-        }
-
-        public Vector2 getP(int n, float t)
-        {
-            Vector2 p = new Vector2(0, 0);
-            float[] k = new float[n];
-            for (int i = 0; i < n; i++)
-            {
-                k[i] = (float)Math.Pow((1 - t), n - 1 - i) * (float)Math.Pow(t, i) * _pascal[i];
-                p.X += k[i] * _vertices_for_bezier[i * 3];
-                p.Y += k[i] * _vertices_for_bezier[i * 3 + 1];
-            }
-            return p;
-        }
-        public List<int> getRow(int rowIndex)
-        {
-            List<int> curRow = new List<int>();
-            curRow.Add(1);
-            if (rowIndex == 0)
-            {
-                return curRow;
-            }
-            List<int> prev = getRow(rowIndex - 1);
-            for (int i = 1; 1 < prev.Count; i++)
-            {
-                int curr = prev[i - 1] + prev[i];
-                curRow.Add(curr);
-            }
-            curRow.Add(1);
-            return curRow;
-        }
+       
 
         public void createEllipsoid(float center_x, float center_y, float center_z, float radius_x, float radius_y, float radius_z)
         {

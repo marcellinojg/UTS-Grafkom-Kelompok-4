@@ -35,16 +35,25 @@ namespace Minion
 
             
         }
+        protected override void OnResize(ResizeEventArgs e)
+        {
+            base.OnResize(e);
 
+            GL.Viewport(0, 0, Size.X, Size.Y);
+
+        }
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             base.OnRenderFrame(args);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Matrix4 temp = Matrix4.Identity;
-            //temp = temp * Matrix4.CreateRotationX(degree);
-            //temp = temp * Matrix4.CreateRotationY(degree);
+            temp = temp * Matrix4.CreateRotationX(degree);
+            temp = temp * Matrix4.CreateRotationY(degree);
             degree += MathHelper.DegreesToRadians(1.0f);
             minion.Render(temp);
+
+            
+
             SwapBuffers();
         }
     }
