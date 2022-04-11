@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -76,7 +76,12 @@ namespace Minion
 
 
             suit = new Asset3d();
-            suit.createBottomHalfSphere(0.0f, -0.51f, 0.0f, 0.57f);
+            suit.createBottomHalfSphereElliptical(0.0f, -0.65f, 0.0f, 0.4f, 1.32f);
+
+            suit.children.Add(new Asset3d());
+            suit.children[0].createCylinder(0.0f, -0.4f, 0.0f, 0.56f, 0.1f);
+
+            
 
             //Hairs
             hairs = new Asset3d();
@@ -213,6 +218,10 @@ namespace Minion
 
             suit.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
 
+            suit.children[0].Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+
+            
+
             eyeLeft.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
             GL.Uniform4(GL.GetUniformLocation(eyeLeft._shader.Handle, "ourColor"), 0.7f, 0.296f, 0.0f, 1.0f);
 
@@ -283,7 +292,7 @@ namespace Minion
 
             hairs.Render(temp);
 
-            
+
 
 
 
