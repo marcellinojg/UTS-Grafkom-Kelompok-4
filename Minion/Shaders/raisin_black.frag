@@ -12,6 +12,6 @@ void main()
 
 	//outputColor = ourColor;
 
-	outputColor = vec4(0.5,0.5,0.5,1.0);
+	outputColor = vec4(0.14,0.12,0.13,1.0);
 	
 }

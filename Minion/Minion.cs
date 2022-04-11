@@ -37,31 +37,31 @@ namespace Minion
 
             //Eyes and Glasses
             glassesLeft = new Asset3d();
-            glassesLeft.createEllipsoid(-0.22f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
+            glassesLeft.createEllipsoid(-0.18f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
 
             glassesRight = new Asset3d();
-            glassesRight.createEllipsoid(0.22f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
+            glassesRight.createEllipsoid(0.18f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
 
             glassesStrap = new Asset3d();
             glassesStrap.createCylinder(0.0f, 0.25f, 0.0f, 0.6f, 0.15f);
 
             eyeWhiteLeft = new Asset3d();
-            eyeWhiteLeft.createEllipsoid(-0.22f, 0.3f, 0.47f, 0.2f, 0.2f, 0.2f);
+            eyeWhiteLeft.createEllipsoid(-0.18f, 0.3f, 0.47f, 0.2f, 0.2f, 0.2f);
 
             eyeWhiteRight = new Asset3d();
-            eyeWhiteRight.createEllipsoid(0.22f, 0.3f, 0.47f, 0.2f, 0.2f, 0.2f);
+            eyeWhiteRight.createEllipsoid(0.18f, 0.3f, 0.47f, 0.2f, 0.2f, 0.2f);
 
             eyeLeft = new Asset3d();
-            eyeLeft.createEllipsoid(-0.22f, 0.3f, 0.6f, 0.1f, 0.1f, 0.1f);
+            eyeLeft.createEllipsoid(-0.18f, 0.3f, 0.6f, 0.1f, 0.1f, 0.1f);
 
             eyeLeft.children.Add(new Asset3d());
-            eyeLeft.children[0].createEllipsoid(-0.22f, 0.3f, 0.67f, 0.05f, 0.05f, 0.05f);
+            eyeLeft.children[0].createEllipsoid(-0.18f, 0.3f, 0.67f, 0.05f, 0.05f, 0.05f);
 
             eyeRight = new Asset3d();
-            eyeRight.createEllipsoid(0.22f, 0.3f, 0.6f,0.1f, 0.1f, 0.1f);
+            eyeRight.createEllipsoid(0.18f, 0.3f, 0.6f,0.1f, 0.1f, 0.1f);
 
             eyeRight.children.Add(new Asset3d());
-            eyeRight.children[0].createEllipsoid(0.22f, 0.3f, 0.67f, 0.05f, 0.05f, 0.05f);
+            eyeRight.children[0].createEllipsoid(0.18f, 0.3f, 0.67f, 0.05f, 0.05f, 0.05f);
 
 
             //Main Body and Suits
@@ -69,14 +69,17 @@ namespace Minion
             body.createCylinder(0.0f, -0.5f, 0.0f, 0.55f, 1.0f);
 
             body.children.Add(new Asset3d());
-            body.children[0].createTopHalfSphere(0.0f, 0.51f, 0.0f, 0.55f);
+            body.children[0].createTopHalfSphere(0.0f, 0.50f, 0.0f, 0.55f);
 
             body.children.Add(new Asset3d());
-            body.children[1].createBottomHalfSphere(0.0f, -0.51f, 0.0f, 0.55f);
+            body.children[1].createBottomHalfSphere(0.0f, -0.50f, 0.0f, 0.55f);
 
 
             suit = new Asset3d();
-            suit.createBottomHalfSphere(0.0f, -0.51f, 0.0f, 0.57f);
+            suit.createBottomHalfSphereElliptical(0.0f, -0.663f, 0.0f, 0.4f, 1.32f);
+
+            suit.children.Add(new Asset3d());
+            suit.children[0].createCylinder(0.0f, -0.4f, 0.0f, 0.56f, 0.1f);
 
             //Hairs
             hairs = new Asset3d();
@@ -196,57 +199,56 @@ namespace Minion
 
         public void Load()
         {
-            glassesLeft.Load(Constants.path + "gray.vert", Constants.path + "gray.frag", 800, 800);
+            //Glasses
+            glassesLeft.Load(Constants.path + "spanish_gray.vert", Constants.path + "spanish_gray.frag", 800, 800);
 
-            glassesRight.Load(Constants.path + "gray.vert", Constants.path + "gray.frag", 800, 800);
+            glassesRight.Load(Constants.path + "spanish_gray.vert", Constants.path + "spanish_gray.frag", 800, 800);
 
-            glassesStrap.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(glassesStrap._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+            glassesStrap.Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
-            eyeWhiteLeft.Load(Constants.path + "white_eye.vert", Constants.path + "white_eye.frag", 800, 800);
+            //Eyes
+            eyeWhiteLeft.Load(Constants.path + "white.vert", Constants.path + "white.frag", 800, 800);
 
-            eyeWhiteRight.Load(Constants.path + "white_eye.vert", Constants.path + "white_eye.frag", 800, 800);
+            eyeWhiteRight.Load(Constants.path + "white.vert", Constants.path + "white.frag", 800, 800);
 
-            body.Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
+            eyeLeft.Load(Constants.path + "cafe_au_lait.vert", Constants.path + "cafe_au_lait.frag", 800, 800);
 
-            body.children[1].Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
+            eyeRight.Load(Constants.path + "cafe_au_lait.vert", Constants.path + "cafe_au_lait.frag", 800, 800);
 
-            suit.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+            eyeLeft.children[0].Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
-            eyeLeft.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(eyeLeft._shader.Handle, "ourColor"), 0.7f, 0.296f, 0.0f, 1.0f);
+            eyeRight.children[0].Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
-            eyeRight.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(eyeRight._shader.Handle, "ourColor"), 0.7f, 0.296f, 0.0f, 1.0f);
+            //Body & Suit
+            body.Load(Constants.path + "banana_yellow.vert", Constants.path + "banana_yellow.frag", 800, 800);
 
-            rightArm.Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
+            body.children[1].Load(Constants.path + "banana_yellow.vert", Constants.path + "banana_yellow.frag", 800, 800);
+
+            suit.Load(Constants.path + "ocean_boat_blue.vert", Constants.path + "ocean_boat_blue.frag", 800, 800);
+
+            suit.children[0].Load(Constants.path + "ocean_boat_blue.vert", Constants.path + "ocean_boat_blue.frag", 800, 800);
+            //Arms
+            rightArm.Load(Constants.path + "banana_yellow.vert", Constants.path + "banana_yellow.frag", 800, 800);
+
+            leftArm.Load(Constants.path + "banana_yellow.vert", Constants.path + "banana_yellow.frag", 800, 800);
             
+            //Hands
+            leftHand.Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
-            leftArm.Load(Constants.path + "minion_body.vert", Constants.path + "minion_body.frag", 800, 800);
-
-            
-            leftHand.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(leftHand._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
-
-            rightHand.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(rightHand._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+            rightHand.Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
 
-            
+            //Legs
+            leftLeg.Load(Constants.path + "ocean_boat_blue.vert", Constants.path + "ocean_boat_blue.frag", 800, 800);
 
+            rightLeg.Load(Constants.path + "ocean_boat_blue.vert", Constants.path + "ocean_boat_blue.frag", 800, 800);
 
-            leftLeg.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+            rightFoot.Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
-            rightLeg.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
+            leftFoot.Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800, 800);
 
-            rightFoot.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(rightFoot._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
-
-            leftFoot.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
-            GL.Uniform4(GL.GetUniformLocation(leftFoot._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
-
-            hairs.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag",800,800);
-            GL.Uniform4(GL.GetUniformLocation(hairs._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
+            //Hairs
+            hairs.Load(Constants.path + "raisin_black.vert", Constants.path + "raisin_black.frag", 800,800);
 
 
 

@@ -182,7 +182,7 @@ namespace Minion
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
-            for(float t = 0; t <= height; t+=0.001f)
+            for(float t = 0; t <= height; t+=0.003f)
             {
                 for(float deg = 0; deg <= 360; deg++)
                 {
@@ -203,7 +203,7 @@ namespace Minion
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
-            for (float t = 0; t <= height; t += 0.001f)
+            for (float t = 0; t <= height; t += 0.003f)
             {
                 for (float deg = 0; deg <= 360; deg++)
                 {
@@ -257,8 +257,27 @@ namespace Minion
                     _vertices.Add(temp_vector);
                 }
             }
-        }   
+        }
+        public void createBottomHalfSphereElliptical(float center_x, float center_y, float center_z, float radius, float a)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
 
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+
+            for (float u = -pi / 2; u <= pi / 2; u += pi / 1200)
+            {
+                for (float v = -pi / 2; v <= pi / 2; v += pi / 1200)
+                {
+                    temp_vector.X = center_x + a * radius * (float)Math.Sin(v);
+                    temp_vector.Y = center_y - (radius * (float)Math.Cos(v) * (float)Math.Cos(u));
+                    temp_vector.Z = center_z + a * radius * (float)Math.Cos(v) * (float)Math.Sin(u);
+                    _vertices.Add(temp_vector);
+                }
+            }
+        }
         public void createEllipsoid(float center_x, float center_y, float center_z, float radius_x, float radius_y, float radius_z)
         {
             _centerPosition.X = center_x;
@@ -310,8 +329,6 @@ namespace Minion
         public void setVertices(List<Vector3> vertices)
         {
             _vertices = vertices;
-            Console.WriteLine("Done");
-            Console.WriteLine(vertices[0]);
         }
         public void AddCoordinates(float x1, float y1, float z1)
         {
