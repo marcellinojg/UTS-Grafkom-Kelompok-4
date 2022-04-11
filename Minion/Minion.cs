@@ -30,7 +30,7 @@ namespace Minion
         Asset3d leftFoot;
         Asset3d rightFoot;
 
-        Asset2d hairs;
+        public Asset3d hairs;
         
         public Minion()
         {
@@ -79,13 +79,54 @@ namespace Minion
             suit.createBottomHalfSphere(0.0f, -0.51f, 0.0f, 0.57f);
 
             //Hairs
-            hairs = new Asset2d();
-            hairs.addCoordinatesToVertices(0.0f, 0.0f);
-            hairs.addCoordinatesToVertices(0.3f, 0.2f);
-            hairs.addCoordinatesToVertices(0.5f, 0.4f);
-            hairs.CreateCurveBezier();
-            
-            
+            hairs = new Asset3d();
+            hairs.children.Add(new Asset3d());
+            hairs.children.Add(new Asset3d());
+            hairs.children.Add(new Asset3d());
+            hairs.children.Add(new Asset3d());
+            hairs.children.Add(new Asset3d());
+
+            hairs.AddCoordinates(0.0f, 1.0f, 0.0f);
+            hairs.AddCoordinates(0.1f, 1.1f,0.0f);
+            hairs.AddCoordinates(0.2f, 1.1f,0.0f);
+            hairs.AddCoordinates(0.4f, 0.9f, 0.0f);
+
+            hairs.children[0].AddCoordinates(0.0f, 1.0f, 0.0f);
+            hairs.children[0].AddCoordinates(-0.1f, 1.1f, 0.0f);
+            hairs.children[0].AddCoordinates(-0.2f, 1.1f, 0.0f);
+            hairs.children[0].AddCoordinates(-0.4f, 0.9f, 0.0f);
+
+            hairs.children[1].AddCoordinates(0.0f, 1.0f, 0.2f);
+            hairs.children[1].AddCoordinates(0.1f, 1.1f, 0.2f);
+            hairs.children[1].AddCoordinates(0.2f, 1.1f, 0.2f);
+            hairs.children[1].AddCoordinates(0.4f, 0.8f, 0.2f);
+
+            hairs.children[2].AddCoordinates(0.0f, 1.0f, 0.2f);
+            hairs.children[2].AddCoordinates(-0.1f, 1.1f, 0.2f);
+            hairs.children[2].AddCoordinates(-0.2f, 1.1f, 0.2f);
+            hairs.children[2].AddCoordinates(-0.4f, 0.8f, 0.2f);
+
+            hairs.children[3].AddCoordinates(0.0f, 1.0f, -0.2f);
+            hairs.children[3].AddCoordinates(0.1f, 1.1f, -0.2f);
+            hairs.children[3].AddCoordinates(0.2f, 1.1f, -0.2f);
+            hairs.children[3].AddCoordinates(0.4f, 0.8f, -0.2f);
+
+            hairs.children[4].AddCoordinates(0.0f, 1.0f, -0.2f);
+            hairs.children[4].AddCoordinates(-0.1f, 1.1f, -0.2f);
+            hairs.children[4].AddCoordinates(-0.2f, 1.1f, -0.2f);
+            hairs.children[4].AddCoordinates(-0.4f, 0.8f, -0.2f);
+
+
+
+
+            hairs.Bezier3d();
+            hairs.children[0].Bezier3d();
+            hairs.children[1].Bezier3d();
+            hairs.children[2].Bezier3d();
+            hairs.children[3].Bezier3d();
+            hairs.children[4].Bezier3d();
+
+
 
 
             //Arms
@@ -191,14 +232,7 @@ namespace Minion
             GL.Uniform4(GL.GetUniformLocation(rightHand._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
 
 
-            //leftArm.rotate(leftArm._centerPosition, leftArm._euler[2], -75);
-            //rightArm.rotate(rightArm._centerPosition, rightArm._euler[2], 75);
-
             
-
-            //rightHand.children[0].rotate(rightHand.children[0]._centerPosition, rightHand._euler[2], 0);
-            //rightHand.children[1].rotate(rightHand.children[1]._centerPosition, rightHand._euler[2], 45);
-            //rightHand.children[2].rotate(rightHand.children[2]._centerPosition, rightHand._euler[2], -45);
 
 
             leftLeg.Load(Constants.path + "blue_denim.vert", Constants.path + "blue_denim.frag", 800, 800);
@@ -211,7 +245,7 @@ namespace Minion
             leftFoot.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag", 800, 800);
             GL.Uniform4(GL.GetUniformLocation(leftFoot._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
 
-            hairs.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag");
+            hairs.Load(Constants.path + "uniform.vert", Constants.path + "uniform.frag",800,800);
             GL.Uniform4(GL.GetUniformLocation(hairs._shader.Handle, "ourColor"), 0.0f, 0.0f, 0.0f, 1.0f);
 
 
@@ -222,32 +256,32 @@ namespace Minion
         
         public void Render(Matrix4 temp)
         {
-            //body.Render(temp);
-            //suit.Render(temp);
-            //rightArm.Render(temp);
+            body.Render(temp);
+            suit.Render(temp);
+            rightArm.Render(temp);
 
-            //leftArm.Render(temp);
+            leftArm.Render(temp);
 
-            //leftHand.Render(temp);
-            //rightHand.Render(temp);
+            leftHand.Render(temp);
+            rightHand.Render(temp);
 
-            //eyeWhiteLeft.Render(temp);
-            //eyeWhiteRight.Render(temp);
-            //eyeLeft.Render(temp);
-            //eyeRight.Render(temp);
-            //glassesStrap.Render(temp);
-            //glassesLeft.Render(temp);
-            //glassesRight.Render(temp);
+            eyeWhiteLeft.Render(temp);
+            eyeWhiteRight.Render(temp);
+            eyeLeft.Render(temp);
+            eyeRight.Render(temp);
+            glassesStrap.Render(temp);
+            glassesLeft.Render(temp);
+            glassesRight.Render(temp);
 
-            
 
-            //leftLeg.Render(temp);
-            //rightLeg.Render(temp);
 
-            //leftFoot.Render(temp);
-            //rightFoot.Render(temp);
+            leftLeg.Render(temp);
+            rightLeg.Render(temp);
 
-            hairs.Render();
+            leftFoot.Render(temp);
+            rightFoot.Render(temp);
+
+            hairs.Render(temp);
 
             
 

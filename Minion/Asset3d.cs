@@ -15,7 +15,8 @@ namespace Minion
     }
     internal class Asset3d
     {
-        List<Vector3> _vertices = new List<Vector3>();
+        public List<Vector3> _vertices = new List<Vector3>();
+        List<Vector3> _vertice_bezier = new List<Vector3>();
         int _vertexBufferObject;
         int _vertexArrayObject;
         Matrix4 _view;
@@ -256,10 +257,7 @@ namespace Minion
                     _vertices.Add(temp_vector);
                 }
             }
-        }
-
-
-       
+        }   
 
         public void createEllipsoid(float center_x, float center_y, float center_z, float radius_x, float radius_y, float radius_z)
         {
@@ -279,6 +277,46 @@ namespace Minion
                     _vertices.Add(temp_vector);
                 }
             }
+        }
+
+        public Vector3 getSegment(float Time)
+        {
+            Time = Math.Clamp(Time, 0, 1);
+            float time = 1 - Time;
+            Vector3 result =   
+            ((float)Math.Pow(time, 3) * _vertice_bezier[0]) 
+            + (3 * time * time * Time * _vertice_bezier[1])
+            + (3 * time * Time * Time * _vertice_bezier[2])
+            + (Time * Time * Time * _vertice_bezier[3]);
+            return result;
+        }
+        public void Bezier3d()
+        {
+            List<Vector3> segments = new List<Vector3>();
+            float time;
+
+            for (float i = 0; i < 1.0f; i += 0.01f)
+            {
+                
+                time = i;
+                segments.Add(getSegment(time));
+            }
+
+            setVertices(segments);
+
+            
+
+        }
+        public void setVertices(List<Vector3> vertices)
+        {
+            _vertices = vertices;
+            Console.WriteLine("Done");
+            Console.WriteLine(vertices[0]);
+        }
+        public void AddCoordinates(float x1, float y1, float z1)
+        {
+            _vertice_bezier.Add(new Vector3(x1, y1, z1));
+
         }
 
     }

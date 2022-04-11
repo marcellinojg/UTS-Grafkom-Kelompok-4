@@ -66,72 +66,10 @@ namespace Minion
             }
 
         }
-        public void addCoordinatesToVertices(float _x, float _y)
-        {
-            tiga_titik[indexs * 3] = _x;
-            tiga_titik[indexs * 3 + 1] = _y;
-            tiga_titik[indexs * 3 + 2] = 0;
-            indexs++;
-            
-        }
-        public void CreateCurveBezier()
-        {
-            List<float> _vertices_bezier = new List<float>();
-            List<int> pascal = getRow(indexs - 1);
-            _pascal = pascal.ToArray();
-            for (float t = 0; t <= 1.0f; t += 0.01f)
-            {
-                Vector2 p = getP(indexs, t);
-                _vertices_bezier.Add(p.X);
-                _vertices_bezier.Add(p.Y);
-                _vertices_bezier.Add(0);
-            }
-            setVertices(_vertices_bezier.ToArray());
-        }
-        public Vector2 getP(int n, float t)
-        {
-            Vector2 p = new Vector2(0, 0);
-            float[] k = new float[n];
+        
 
-            for (int i = 0; i < n; i++)
-            {
-                k[i] = (float)Math.Pow((1 - t), n - 1 - i) * (float)Math.Pow(t, i) * _pascal[i];
-            }
-            for (int i = 0; i < n; i++)
-            {
-                p.X += k[i] * tiga_titik[i * 3];
-                p.Y += k[i] * tiga_titik[i * 3 + 1];
-            }
+        
 
-            return p;
-        }
-        public List<int> getRow(int rowIndex)
-        {
-            List<int> currow = new List<int>();
-
-            //element 1 dari pascal
-            currow.Add(1);
-
-            if (rowIndex == 0)
-            {
-                return currow;
-            }
-            List<int> prev = getRow(rowIndex - 1);
-            //nambah element pascal yg ditengah
-            for (int i = 1; i < prev.Count; i++)
-            {
-                int curr = prev[i - 1] + prev[i];
-                currow.Add(curr);
-            }
-            //nambah element yg terakhir
-            currow.Add(1);
-
-            return currow;
-        }
-
-        public void setVertices(float[] vertices)
-        {
-            _vertices = vertices;
-        }  
+        
     }
 }

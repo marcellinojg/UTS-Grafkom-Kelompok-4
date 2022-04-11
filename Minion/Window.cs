@@ -33,7 +33,13 @@ namespace Minion
 
             minion.Load();
 
-            
+            for (int i = 0; i < minion.hairs._vertices.Count; i++)
+            {
+                Console.WriteLine(minion.hairs._vertices[i]);
+            }
+
+
+
         }
         protected override void OnResize(ResizeEventArgs e)
         {
