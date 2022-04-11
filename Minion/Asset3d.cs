@@ -1,4 +1,4 @@
-﻿using LearnOpenTK.Common;
+using LearnOpenTK.Common;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System;
@@ -16,6 +16,7 @@ namespace Minion
     internal class Asset3d
     {
         public List<Vector3> _vertices = new List<Vector3>();
+        public List<uint> _indices = new List<uint>();
         List<Vector3> _vertice_bezier = new List<Vector3>();
         int _vertexBufferObject;
         int _vertexArrayObject;
@@ -257,7 +258,28 @@ namespace Minion
                     _vertices.Add(temp_vector);
                 }
             }
-        }   
+        }
+
+        public void createBottomHalfSphereElliptical(float center_x, float center_y, float center_z, float radius, float a)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+
+            for (float u = -pi / 2; u <= pi / 2; u += pi / 1200)
+            {
+                for (float v = -pi / 2; v <= pi / 2; v += pi / 1200)
+                {
+                    temp_vector.X = center_x + a * radius * (float)Math.Sin(v);
+                    temp_vector.Y = center_y - (radius * (float)Math.Cos(v) * (float)Math.Cos(u));
+                    temp_vector.Z = center_z + a * radius * (float)Math.Cos(v) * (float)Math.Sin(u);
+                    _vertices.Add(temp_vector);
+                }
+            }
+        }
 
         public void createEllipsoid(float center_x, float center_y, float center_z, float radius_x, float radius_y, float radius_z)
         {
@@ -278,6 +300,8 @@ namespace Minion
                 }
             }
         }
+
+        
 
         public Vector3 getSegment(float Time)
         {
