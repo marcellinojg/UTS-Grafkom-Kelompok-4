@@ -160,8 +160,16 @@ namespace Minion
             _shader.SetMatrix4("model", _model);
             _shader.SetMatrix4("view", _view);
             _shader.SetMatrix4("projection", _projection);
-
-            GL.DrawArrays(PrimitiveType.LineLoop, 0, _vertices.Count);
+            
+            if(_vertice_bezier.Count != 0)
+            {
+                GL.DrawArrays(PrimitiveType.TriangleFan, 0, _vertices.Count);
+            }
+            else
+            {
+                GL.DrawArrays(PrimitiveType.LineStrip, 0, _vertices.Count);
+            }
+            
 
             foreach(var item in children)
             {
@@ -182,7 +190,7 @@ namespace Minion
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
-            for(float t = 0; t <= height; t+=0.003f)
+            for(float t = 0; t <= height; t+=0.0035f)
             {
                 for(float deg = 0; deg <= 360; deg++)
                 {
@@ -203,7 +211,7 @@ namespace Minion
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
-            for (float t = 0; t <= height; t += 0.003f)
+            for (float t = 0; t <= height; t += 0.0035f)
             {
                 for (float deg = 0; deg <= 360; deg++)
                 {
@@ -227,9 +235,9 @@ namespace Minion
             float pi = (float)Math.PI;
             Vector3 temp_vector;
 
-            for (float u = -pi/2; u <= pi/2; u += pi / 1200)
+            for (float u = -pi/2; u <= pi/2; u += pi / 720)
             {
-                for (float v = -pi / 2; v <= pi / 2; v += pi / 1200)
+                for (float v = -pi / 2; v <= pi / 2; v += pi / 720)
                 {
                     temp_vector.X = center_x + radius * (float)Math.Sin(v);
                     temp_vector.Y = center_y + radius * (float)Math.Cos(v) * (float)Math.Cos(u);
@@ -247,9 +255,9 @@ namespace Minion
             float pi = (float)Math.PI;
             Vector3 temp_vector;
 
-            for (float u = -pi / 2; u <= pi / 2; u += pi / 1200)
+            for (float u = -pi / 2; u <= pi / 2; u += pi / 720)
             {
-                for (float v = -pi / 2; v <= pi / 2; v += pi / 1200)
+                for (float v = -pi / 2; v <= pi / 2; v += pi / 720)
                 {
                     temp_vector.X = center_x + radius * (float)Math.Sin(v);
                     temp_vector.Y = center_y -(radius * (float)Math.Cos(v) * (float)Math.Cos(u));
@@ -267,9 +275,9 @@ namespace Minion
             float pi = (float)Math.PI;
             Vector3 temp_vector;
 
-            for (float u = -pi / 2; u <= pi / 2; u += pi / 1200)
+            for (float u = -pi / 2; u <= pi / 2; u += pi / 720)
             {
-                for (float v = -pi / 2; v <= pi / 2; v += pi / 1200)
+                for (float v = -pi / 2; v <= pi / 2; v += pi / 720)
                 {
                     temp_vector.X = center_x + a * radius * (float)Math.Sin(v);
                     temp_vector.Y = center_y - (radius * (float)Math.Cos(v) * (float)Math.Cos(u));
@@ -307,9 +315,9 @@ namespace Minion
             float pi = (float)Math.PI;
             Vector3 temp_vector;
 
-            for (float u = 0; u <= 2*pi; u += pi/72)
+            for (float u = 0; u <= 2*pi; u += pi/720)
             {
-                for (float v = 0; v <= 2*pi; v += pi / 72)
+                for (float v = 0; v <= 2*pi; v += pi / 720)
                 {
                     temp_vector.X = center_x + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Cos(u);
                     temp_vector.Y = center_y + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Sin(u);
@@ -317,6 +325,51 @@ namespace Minion
                     _vertices.Add(temp_vector);
                 }
             }
+        }
+
+        public void createFrontEllipticalCylinder(float center_x, float center_y, float center_z, float radius, float height,float a)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+
+
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+            for (float t = 0; t <= height; t += 0.003f)
+            {
+                for (float deg = 0; deg <= 360; deg ++)
+                {
+                    temp_vector.X = center_x + a * radius * (float)Math.Cos(deg);
+                    temp_vector.Y = center_y + t;
+                    temp_vector.Z = center_z + a * Math.Abs(radius * (float)Math.Sin(deg));
+                    _vertices.Add(temp_vector);
+                }
+            }
+
+        }
+
+        public void createBackEllipticalCylinder(float center_x, float center_y, float center_z, float radius, float height, float a)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+            for (float t = 0; t <= height; t += 0.003f)
+            {
+                for (float deg = 0; deg <= 360; deg ++)
+                {
+                    temp_vector.X = center_x + a * radius * (float)Math.Sin(deg);
+                    temp_vector.Y = center_y + t;
+                    temp_vector.Z = center_z + (-a) * Math.Abs(radius * (float)Math.Cos(deg));
+                    _vertices.Add(temp_vector);
+                }
+            }
+
         }
 
         public Vector3 getSegment(float Time)

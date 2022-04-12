@@ -27,3 +27,13 @@ C:\Users\marve\source\repos\marcellinojg\Proyek-Grafkom\Common\obj\Debug\netcore
 C:\Users\marve\source\repos\marcellinojg\Proyek-Grafkom\Common\obj\Debug\netcoreapp3.1\Common.csproj.CoreCompileInputs.cache
 C:\Users\marve\source\repos\marcellinojg\Proyek-Grafkom\Common\obj\Debug\netcoreapp3.1\LearnOpenTK.Common.dll
 C:\Users\marve\source\repos\marcellinojg\Proyek-Grafkom\Common\obj\Debug\netcoreapp3.1\LearnOpenTK.Common.pdb
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\bin\Debug\netcoreapp3.1\LearnOpenTK.Common.deps.json
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\bin\Debug\netcoreapp3.1\LearnOpenTK.Common.dll
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\bin\Debug\netcoreapp3.1\LearnOpenTK.Common.pdb
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\Common.csproj.AssemblyReference.cache
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\Common.GeneratedMSBuildEditorConfig.editorconfig
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfoInputs.cache
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfo.cs
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\Common.csproj.CoreCompileInputs.cache
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\LearnOpenTK.Common.dll
+E:\Kuliah\Semester 4\Grafkom\Projects\Minion\Common\obj\Debug\netcoreapp3.1\LearnOpenTK.Common.pdb
