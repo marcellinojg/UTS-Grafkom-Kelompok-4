@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Kuliah\\Semester 4\\Grafkom\\Projects\\Common\\Common.csproj": {}
+    "C:\\Users\\marve\\source\\repos\\marcellinojg\\Proyek-Grafkom\\Common\\Common.csproj": {}
   },
   "projects": {
-    "E:\\Kuliah\\Semester 4\\Grafkom\\Projects\\Common\\Common.csproj": {
+    "C:\\Users\\marve\\source\\repos\\marcellinojg\\Proyek-Grafkom\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Kuliah\\Semester 4\\Grafkom\\Projects\\Common\\Common.csproj",
+        "projectUniqueName": "C:\\Users\\marve\\source\\repos\\marcellinojg\\Proyek-Grafkom\\Common\\Common.csproj",
         "projectName": "LearnOpenTK.Common",
-        "projectPath": "E:\\Kuliah\\Semester 4\\Grafkom\\Projects\\Common\\Common.csproj",
-        "packagesPath": "C:\\Users\\Marcellino\\.nuget\\packages\\",
-        "outputPath": "E:\\Kuliah\\Semester 4\\Grafkom\\Projects\\Common\\obj\\",
+        "projectPath": "C:\\Users\\marve\\source\\repos\\marcellinojg\\Proyek-Grafkom\\Common\\Common.csproj",
+        "packagesPath": "C:\\Users\\marve\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\marve\\source\\repos\\marcellinojg\\Proyek-Grafkom\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Marcellino\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\marve\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -42,7 +42,7 @@
           "dependencies": {
             "OpenTK": {
               "target": "Package",
-              "version": "[4.4.0, )"
+              "version": "[4.7.1, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

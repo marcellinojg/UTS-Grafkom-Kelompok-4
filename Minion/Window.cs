@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,9 @@ namespace Minion
     class Window : GameWindow
     {
         Minion minion;
-        float degree = 0;
+        float degreeVertical = 0;
+        float degreeHorizontal = 0;
+        Matrix4 temp = Matrix4.Identity;
         static class Constants
         {
             public const string path = "../../../Shaders/";
@@ -49,10 +52,30 @@ namespace Minion
         {
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Matrix4 temp = Matrix4.Identity;
-            temp = temp * Matrix4.CreateRotationX(degree);
-            temp = temp * Matrix4.CreateRotationY(degree);
-            degree += MathHelper.DegreesToRadians(1.0f);
+
+            if (KeyboardState.IsKeyDown(Keys.Up))
+            {
+                degreeVertical += MathHelper.DegreesToRadians(0.05f);
+                temp = temp * Matrix4.CreateRotationX(degreeVertical);
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Down))
+            {
+                degreeVertical += MathHelper.DegreesToRadians(-0.05f);
+                temp = temp * Matrix4.CreateRotationX(degreeVertical);
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Right))
+            {
+                degreeHorizontal += MathHelper.DegreesToRadians(0.05f);
+                temp = temp * Matrix4.CreateRotationY(degreeHorizontal);
+            }
+            else if (KeyboardState.IsKeyDown(Keys.Left))
+            {
+                degreeHorizontal += MathHelper.DegreesToRadians(-0.05f);
+                temp = temp * Matrix4.CreateRotationY(degreeHorizontal);
+            }
+
+
+
             minion.Render(temp);
 
             
