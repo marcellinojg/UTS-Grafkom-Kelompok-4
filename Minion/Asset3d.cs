@@ -298,6 +298,27 @@ namespace Minion
             }
         }
 
+        public void createTorus(float center_x, float center_y, float center_z,float r1,float r2)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+
+            for (float u = 0; u <= 2*pi; u += pi/72)
+            {
+                for (float v = 0; v <= 2*pi; v += pi / 72)
+                {
+                    temp_vector.X = center_x + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Cos(u);
+                    temp_vector.Y = center_y + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Sin(u);
+                    temp_vector.Z = center_z + r2 * (float)Math.Sin(v);
+                    _vertices.Add(temp_vector);
+                }
+            }
+        }
+
         public Vector3 getSegment(float Time)
         {
             Time = Math.Clamp(Time, 0, 1);
@@ -322,8 +343,6 @@ namespace Minion
             }
 
             setVertices(segments);
-
-            
 
         }
         public void setVertices(List<Vector3> vertices)

@@ -37,7 +37,7 @@ namespace Minion
 
             //Eyes and Glasses
             glassesLeft = new Asset3d();
-            glassesLeft.createEllipsoid(-0.18f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
+            glassesLeft.createTorus(-0.18f, 0.3f, 0.4f, 0.8f, 0.5f);
 
             glassesRight = new Asset3d();
             glassesRight.createEllipsoid(0.18f, 0.3f, 0.4f, 0.25f, 0.25f, 0.25f);
@@ -258,32 +258,32 @@ namespace Minion
         
         public void Render(Matrix4 temp)
         {
-            body.Render(temp);
-            suit.Render(temp);
-            rightArm.Render(temp);
+            //body.Render(temp);
+            //suit.Render(temp);
+            //rightArm.Render(temp);
 
-            leftArm.Render(temp);
+            //leftArm.Render(temp);
 
-            leftHand.Render(temp);
-            rightHand.Render(temp);
+            //leftHand.Render(temp);
+            //rightHand.Render(temp);
 
-            eyeWhiteLeft.Render(temp);
-            eyeWhiteRight.Render(temp);
-            eyeLeft.Render(temp);
-            eyeRight.Render(temp);
-            glassesStrap.Render(temp);
-            glassesLeft.Render(temp);
-            glassesRight.Render(temp);
+            //eyeWhiteLeft.Render(temp);
+            //eyeWhiteRight.Render(temp);
+            //eyeLeft.Render(temp);
+            //eyeRight.Render(temp);
+            //glassesStrap.Render(temp);
+            //glassesLeft.Render(temp);
+            //glassesRight.Render(temp);
 
 
 
-            leftLeg.Render(temp);
-            rightLeg.Render(temp);
+            //leftLeg.Render(temp);
+            //rightLeg.Render(temp);
 
-            leftFoot.Render(temp);
-            rightFoot.Render(temp);
+            //leftFoot.Render(temp);
+            //rightFoot.Render(temp);
 
-            hairs.Render(temp);
+            //hairs.Render(temp);
 
             
 
