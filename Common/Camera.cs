@@ -55,8 +55,8 @@ namespace LearnOpenTK.Common
                 // We clamp the pitch value between -89 and 89 to prevent the camera from going upside down, and a bunch
                 // of weird "bugs" when you are using euler angles for rotation.
                 // If you want to read more about this you can try researching a topic called gimbal lock
-                //var angle = MathHelper.Clamp(value, -89f, 89f);
-                //_pitch = MathHelper.DegreesToRadians(angle);
+                var angle = MathHelper.Clamp(value, -89f, 89f);
+                _pitch = MathHelper.DegreesToRadians(angle);
                 _pitch = MathHelper.DegreesToRadians(value);
                 UpdateVectors();
             }
@@ -81,7 +81,7 @@ namespace LearnOpenTK.Common
             get => MathHelper.RadiansToDegrees(_fov);
             set
             {
-                var angle = MathHelper.Clamp(value, 1f, 45f);
+                var angle = MathHelper.Clamp(value, 1f, 90f);
                 _fov = MathHelper.DegreesToRadians(angle);
             }
         }

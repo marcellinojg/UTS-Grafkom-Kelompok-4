@@ -151,41 +151,41 @@ namespace Minion
 
         }
 
-        public void Render(Matrix4 temp)
+        public void Render(Matrix4 temp,int type, Matrix4 camera_view, Matrix4 camera_projection)
         {
             _shader.Use();
             GL.BindVertexArray(_vertexArrayObject);
+
             _model = temp;
 
             _shader.SetMatrix4("model", _model);
-            _shader.SetMatrix4("view", _view);
-            _shader.SetMatrix4("projection", _projection);
+            _shader.SetMatrix4("view",camera_view);
+            _shader.SetMatrix4("projection", camera_projection);
             
-            if(_vertice_bezier.Count != 0)
-            {
-                GL.DrawArrays(PrimitiveType.TriangleFan, 0, _vertices.Count);
-            }
-            else
+            if(type == 0)
             {
                 GL.DrawArrays(PrimitiveType.LineStrip, 0, _vertices.Count);
+                
+            }
+            else if (type == 1)
+            {
+                GL.DrawArrays(PrimitiveType.TriangleFan, 0, _vertices.Count);
             }
             
 
             foreach(var item in children)
             {
-                item.Render(temp);
+                item.Render(temp,type,camera_view,camera_projection);
             }
         }
-
-
-        
+ 
         public void createCylinder(float center_x, float center_y, float center_z, float radius, float height)
         {
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
             _centerPosition.Z = center_z;
 
-           
+
 
 
             float pi = (float)Math.PI;

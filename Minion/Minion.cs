@@ -262,41 +262,42 @@ namespace Minion
         }
 
         
-        public void Render(Matrix4 temp)
+        public void Render(Matrix4 temp, Matrix4 camera_view, Matrix4 camera_projection)
         {
             //Main Body & Suit
-            body.Render(temp);
-            suit.Render(temp);
-            frontSuit.Render(temp);
-            backSuit.Render(temp);
+            body.Render(temp,0, camera_view, camera_projection);
+            suit.Render(temp, 0, camera_view, camera_projection);
+            frontSuit.Render(temp, 0, camera_view, camera_projection);
+            backSuit.Render(temp, 0, camera_view, camera_projection);
             //leftStrap.Render(temp);
 
             //Arms & Hands
-            rightArm.Render(temp);
-            leftArm.Render(temp);
-            leftHand.Render(temp);
-            rightHand.Render(temp);
+            rightArm.Render(temp, 0, camera_view, camera_projection);
+            leftArm.Render(temp, 0, camera_view, camera_projection);
+            leftHand.Render(temp, 0, camera_view, camera_projection);
+            rightHand.Render(temp, 0, camera_view, camera_projection);
 
             //Eye & Glasses
-            eyeWhite.Render(temp);
-            eye.Render(temp);
-            glassesStrap.Render(temp);
-            glasses.Render(temp);
+            eyeWhite.Render(temp, 0, camera_view, camera_projection);
+            eye.Render(temp, 0, camera_view, camera_projection);
+            glassesStrap.Render(temp, 0, camera_view, camera_projection);
+            glasses.Render(temp, 0, camera_view, camera_projection);
 
             //Mouth
-            mouth.Render(temp);
-            tooth.Render(temp);
+            mouth.Render(temp, 1, camera_view, camera_projection);
+            tooth.Render(temp, 1, camera_view, camera_projection);
 
             //Legs & Foot
-            leftLeg.Render(temp);
-            rightLeg.Render(temp);
-            leftFoot.Render(temp);
-            rightFoot.Render(temp);
+            leftLeg.Render(temp, 0, camera_view, camera_projection);
+            rightLeg.Render(temp, 0, camera_view, camera_projection);
+            leftFoot.Render(temp, 0, camera_view, camera_projection);
+            rightFoot.Render(temp, 0, camera_view, camera_projection);
 
             //Hairs
-            hairs.Render(temp);
+            hairs.Render(temp, 0, camera_view, camera_projection);
 
         }
+
 
 
     }
