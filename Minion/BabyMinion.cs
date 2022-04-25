@@ -346,12 +346,12 @@ namespace Minion
             
             if (axis == "left")
             {
-                body.rotate(body._centerPosition, new Vector3(0, 1, 0), -3f);
+                body.rotate(body._centerPosition, new Vector3(0, 1, 0), -18f);
                 
             }
             else if (axis == "right")
             {
-                body.rotate(body._centerPosition, new Vector3(0, 1, 0), 3f);
+                body.rotate(body._centerPosition, new Vector3(0, 1, 0), 18f);
                 
             }   
         }
@@ -548,32 +548,69 @@ namespace Minion
             {
                 model = model * Matrix4.CreateTranslation(0.0f, 0.015f, 0.0f);
             }
-            if (timer >= 0 && timer < 85)
+            if (timer >= 0 && timer < 80)
             {
                 model = model * Matrix4.CreateTranslation(0.0f, 0.0f, 0.02f);
                 rotatorWalkZ = WalkZ((bool)rotatorWalkZ[0], (float)rotatorWalkZ[1]);
             }
-            if (timer >= 85 && timer < 145)
+            if (timer >= 80 && timer < 140)
             {
                 rotatorLeftArm = animateLeftArm((bool)rotatorLeftArm[0], (float)rotatorLeftArm[1]);
             }
-            if (timer >= 145 && timer < 205)
+            if (timer >= 140 && timer < 200)
             {
                 rotatorRightArm = animateRightArm((bool)rotatorRightArm[0], (float)rotatorRightArm[1]);
             }
-            if (timer >= 205 && timer < 265)
-            {
-                rotatorLeftArm = animateLeftArm((bool)rotatorLeftArm[0], (float)rotatorLeftArm[1]);
-                rotatorRightArm = animateRightArm((bool)rotatorRightArm[0], (float)rotatorRightArm[1]);
-            }
-            if (timer >= 265 && timer < 295)
+            if (timer >= 200 && timer < 205)
             {
                 rotateAll("left");
             }
-            if (timer >= 295 && timer < 390)
+            if (timer >= 205 && timer < 365)
             {
+                if(timer == 223)
+                {
+                    model = model * Matrix4.CreateTranslation(0.0f, 0.08f, 0.0f);
+                }
+                if (timer == 231)
+                {
+                    model = model * Matrix4.CreateTranslation(0.0f, -0.08f, 0.0f);
+                }
                 model = model * Matrix4.CreateTranslation(-0.02f, 0.0f, 0.0f);
                 rotatorWalkX = WalkX((bool)rotatorWalkX[0], (float)rotatorWalkX[1]);
+            }
+            if (timer >= 365 && timer < 370)
+            {
+                rotateAll("left");
+            }
+            if (timer >= 370 && timer < 450)
+            {
+                model = model * Matrix4.CreateTranslation(0.0f, 0.0f, -0.02f);
+                rotatorWalkZ = WalkZ((bool)rotatorWalkZ[0], (float)rotatorWalkZ[1]);
+            }
+            if (timer >= 450 && timer < 455)
+            {
+                rotateAll("left");
+            }
+            if (timer >= 455 && timer < 615)
+            {
+                if (timer == 581)
+                {
+                    model = model * Matrix4.CreateTranslation(0.0f, 0.08f, 0.0f);
+                }
+                if (timer == 589)
+                {
+                    model = model * Matrix4.CreateTranslation(0.0f, -0.08f, 0.0f);
+                }
+                model = model * Matrix4.CreateTranslation(0.02f, 0.0f, 0.0f);
+                rotatorWalkX = WalkX((bool)rotatorWalkX[0], (float)rotatorWalkX[1]);
+            }
+            if (timer >= 615 && timer < 620)
+            {
+                rotateAll("left");
+            }
+            if (timer == 620)
+            {
+                timer = 0;
             }
 
 

@@ -22,6 +22,8 @@ namespace Minion
         Asset3d leaf2;
         Asset3d dirt1;
         Asset3d dirt2;
+        Asset3d pole1;
+        Asset3d pole2;
         Asset3d sun;
         float SizeX = 1200;
         float SizeY = 1200;
@@ -30,6 +32,9 @@ namespace Minion
         public void setDefault()
         {
             platform = new Asset3d();
+            rope = new Asset3d();
+            pole1 = new Asset3d();
+            pole2 = new Asset3d();
             road = new Asset3d();
             road.children.Add(new Asset3d());
             road.children.Add(new Asset3d());
@@ -52,7 +57,13 @@ namespace Minion
         {
             setDefault();
 
-            platform.createBoxVertices(0.0f, -0.8f, 0.0f, 5.0f, 5.0f, 1.0f);
+            rope.AddCoordinates(3.5f, 0.5f, 1.5f);
+            rope.AddCoordinates(3.0f, -0.5f, 1.5f);
+            rope.AddCoordinates(2.0f, -0.5f, 1.5f);
+            rope.AddCoordinates(1.5f, 0.5f, 1.5f);
+            rope.Bezier3d();
+
+            platform.createBoxVertices(0.0f, -0.8f, 0.0f, 9.0f, 5.0f, 1.0f);
             road.createBoxVertices(0.0f, -0.79f, 0.0f, 2.0f, 4.98f, 1.0f);
             road.children[0].createBoxVertices(0.0f, -0.78f, -1.5f, 0.15f, 0.6f, 1.0f);
             road.children[1].createBoxVertices(0.0f, -0.78f, 0.0f, 0.15f, 0.6f, 1.0f);
@@ -79,6 +90,9 @@ namespace Minion
             leaf2.rotate(leaf2._centerPosition, Vector3.UnitX, 180f);
 
             sun.createEllipsoid(-2.0f, 6.0f, -6.0f, 0.8f, 0.8f, 0.8f);
+
+            pole1.createCylinder(3.5f, -0.5f, 1.5f, 0.05f, 1.5f);
+            pole2.createCylinder(1.5f, -0.5f, 1.5f, 0.05f, 1.5f);
 
 
         }
@@ -137,7 +151,12 @@ namespace Minion
 
             roadBarrier.children[0].Load(Constants.path + "spanish_gray.vert", Constants.path + "spanish_gray.frag", SizeX, SizeY);
 
-         
+            rope.Load(Constants.path + "cafe_au_lait.vert", Constants.path + "cafe_au_lait.frag", SizeX, SizeY);
+
+            pole1.Load(Constants.path + "spanish_gray.vert", Constants.path + "spanish_gray.frag", SizeX, SizeY);
+            pole2.Load(Constants.path + "spanish_gray.vert", Constants.path + "spanish_gray.frag", SizeX, SizeY);
+
+
 
 
 
@@ -160,6 +179,8 @@ namespace Minion
             lamp2.children[0].Render(_environmentModel, 0, camera_view, camera_projection);
             sun.Render(_environmentModel, 0, camera_view, camera_projection);
 
+            pole1.Render(_environmentModel, 1, camera_view, camera_projection);
+            pole2.Render(_environmentModel, 1, camera_view, camera_projection);
 
             tree1.Render(_environmentModel, 1, camera_view, camera_projection);
             tree2.Render(_environmentModel, 1, camera_view, camera_projection);
@@ -169,8 +190,16 @@ namespace Minion
 
             dirt1.Render(_environmentModel, 1, camera_view, camera_projection);
             dirt2.Render(_environmentModel, 1, camera_view, camera_projection);
+
+            rope.Render(_environmentModel, 0, camera_view, camera_projection);
+
+            animateRope();
         }
 
-        
+        public void animateRope()
+        {
+            rope._centerPosition = new Vector3(2.5f, 0.5f, 1.5f);
+            rope.rotate(rope._centerPosition, Vector3.UnitX, 12f);
+        }
     }
 }

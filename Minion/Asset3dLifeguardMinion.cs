@@ -9,28 +9,22 @@ using System.Threading.Tasks;
 
 namespace Minion
 {
-    static class Constants
-    {
-        public const string path = "../../../Shaders/";
-    }
-    internal class Asset3d
+    internal class Asset3dLifeguardMinion
     {
         public List<Vector3> _vertices = new List<Vector3>();
         List<Vector3> _vertice_bezier = new List<Vector3>();
         int _vertexBufferObject;
         int _vertexArrayObject;
-        int _elementBufferObject;
         Matrix4 _view;
         Matrix4 _projection;
         Matrix4 _model;
         public Shader _shader;
         public Vector3 _centerPosition;
-        public List<Asset3d> children;
+        public List<Asset3dLifeguardMinion> children;
         public List<Vector3> _euler;
-        public List<uint> verticesIndices;
-  
 
-        public Asset3d()
+
+        public Asset3dLifeguardMinion()
         {
             setDefault();
         }
@@ -39,17 +33,16 @@ namespace Minion
         {
             _model = Matrix4.Identity;
             _centerPosition = new Vector3(0, 0, 0);
-            children = new List<Asset3d>();
+            children = new List<Asset3dLifeguardMinion>();
             _euler = new List<Vector3>();
             _euler.Add(new Vector3(1, 0, 0));
 
             _euler.Add(new Vector3(0, 1, 0));
 
             _euler.Add(new Vector3(0, 0, 1));
-
-            verticesIndices = new List<uint>();
-
         }
+
+
 
         public void rotate(Vector3 pivot, Vector3 vector, float angle)
         {
@@ -130,7 +123,7 @@ namespace Minion
 
         public void Load(string shadervert, string shaderfrag, float Size_x, float Size_y)
         {
-            
+
             _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Count * Vector3.SizeInBytes, _vertices.ToArray(), BufferUsageHint.StaticDraw);
@@ -147,23 +140,14 @@ namespace Minion
 
             _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
             _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), Size_x / (float)Size_y, 0.5f, 100.0f);
-
-            if (verticesIndices.Count != 0)
-            {
-                _elementBufferObject = GL.GenBuffer();
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, verticesIndices.Count
-                    * sizeof(uint), verticesIndices.ToArray(), BufferUsageHint.StaticDraw);
-            }
-
             foreach (var item in children)
             {
-                item.Load(shadervert,shaderfrag,Size_x,Size_y);
+                item.Load(shadervert, shaderfrag, Size_x, Size_y);
             }
 
         }
 
-        public void Render(Matrix4 temp,int type, Matrix4 camera_view, Matrix4 camera_projection)
+        public void Render(Matrix4 temp, int type, Matrix4 camera_view, Matrix4 camera_projection)
         {
             _shader.Use();
             GL.BindVertexArray(_vertexArrayObject);
@@ -171,41 +155,42 @@ namespace Minion
             _model = temp;
 
             _shader.SetMatrix4("model", _model);
-            _shader.SetMatrix4("view",camera_view);
+            _shader.SetMatrix4("view", camera_view);
             _shader.SetMatrix4("projection", camera_projection);
-
-            if (verticesIndices.Count != 0)
-            {
-                GL.DrawElements(PrimitiveType.Triangles, verticesIndices.Count, DrawElementsType.UnsignedInt, 0);
-                return;
-            }
 
             if (type == 0)
             {
                 GL.DrawArrays(PrimitiveType.LineStrip, 0, _vertices.Count);
-                
+
             }
             else if (type == 1)
             {
                 GL.DrawArrays(PrimitiveType.TriangleFan, 0, _vertices.Count);
             }
-            else if (type == 2)
+
+
+            foreach (var item in children)
             {
-                GL.DrawArrays(PrimitiveType.Triangles, 0, _vertices.Count);
+                item.Render(temp, type, camera_view, camera_projection);
             }
-            
         }
- 
+
+
+
         public void createCylinder(float center_x, float center_y, float center_z, float radius, float height)
         {
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
             _centerPosition.Z = center_z;
+
+
+
+
+            float pi = (float)Math.PI;
             Vector3 temp_vector;
-            
             for (float deg = 0; deg <= 360; deg++)
             {
-                for (float t = 0; t <= height; t += height/2)
+                for (float t = 0; t <= height; t += height / 2)
                 {
                     temp_vector.X = center_x + radius * (float)Math.Cos(deg);
                     temp_vector.Y = center_y + t;
@@ -222,15 +207,15 @@ namespace Minion
             _centerPosition.Y = center_y;
             _centerPosition.Z = center_z;
             Vector3 temp_vector;
-            for (float deg = 0; deg <= 360; deg+=1.5f)
+            for (float deg = 0; deg <= 360; deg += 1.5f)
             {
-                for (float t = 0; t <= height; t += height/2)
+                for (float t = 0; t <= height; t += height / 2)
                 {
                     temp_vector.Y = center_y + radius * (float)Math.Cos(deg);
                     temp_vector.X = center_x + t;
                     temp_vector.Z = center_z + radius * (float)Math.Sin(deg);
                     _vertices.Add(temp_vector);
-                }    
+                }
 
             }
         }
@@ -240,15 +225,15 @@ namespace Minion
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
             _centerPosition.Z = center_z;
-            
+
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
 
-            for (float u = -pi/2; u <= pi/2; u += pi / 100)
+            for (float u = -pi / 2; u <= pi / 2; u += pi / 100)
             {
                 for (float v = -pi / 2; v <= pi / 2; v += pi / 100)
-                { 
+                {
                     temp_vector.X = center_x + radius * (float)Math.Sin(v);
                     temp_vector.Y = center_y + radius * (float)Math.Cos(v) * (float)Math.Cos(u);
                     temp_vector.Z = center_z + radius * (float)Math.Cos(v) * (float)Math.Sin(u);
@@ -270,7 +255,7 @@ namespace Minion
                 for (float v = -pi / 2; v <= pi / 2; v += pi / 100)
                 {
                     temp_vector.X = center_x + radius * (float)Math.Sin(v);
-                    temp_vector.Y = center_y -(radius * (float)Math.Cos(v) * (float)Math.Cos(u));
+                    temp_vector.Y = center_y - (radius * (float)Math.Cos(v) * (float)Math.Cos(u));
                     temp_vector.Z = center_z + radius * (float)Math.Cos(v) * (float)Math.Sin(u);
                     _vertices.Add(temp_vector);
                 }
@@ -304,11 +289,11 @@ namespace Minion
 
             float pi = (float)Math.PI;
             Vector3 temp_vector;
-            for(float u = -pi; u <= pi; u += pi/180)
+            for (float u = -pi; u <= pi; u += pi / 180)
             {
-                for(float v = -pi/2; v <= pi/2; v += pi/180)
+                for (float v = -pi / 2; v <= pi / 2; v += pi / 180)
                 {
-                    temp_vector.X = center_x + radius_x * (float)Math.Cos(v) * (float) Math.Cos(u);
+                    temp_vector.X = center_x + radius_x * (float)Math.Cos(v) * (float)Math.Cos(u);
                     temp_vector.Y = center_y + radius_y * (float)Math.Cos(v) * (float)Math.Sin(u);
                     temp_vector.Z = center_z + radius_z * (float)Math.Sin(v);
                     _vertices.Add(temp_vector);
@@ -316,7 +301,7 @@ namespace Minion
             }
         }
 
-        public void createTorus(float center_x, float center_y, float center_z,float r1,float r2)
+        public void createTorus(float center_x, float center_y, float center_z, float r1, float r2)
         {
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
@@ -325,9 +310,9 @@ namespace Minion
             float pi = (float)Math.PI;
             Vector3 temp_vector;
 
-            for (float u = 0; u <= 2*pi; u += pi/300)
+            for (float u = 0; u <= 2 * pi; u += pi / 300)
             {
-                for (float v = 0; v <= 2*pi; v += pi /300)
+                for (float v = 0; v <= 2 * pi; v += pi / 300)
                 {
                     temp_vector.X = center_x + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Cos(u);
                     temp_vector.Y = center_y + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Sin(u);
@@ -337,7 +322,48 @@ namespace Minion
             }
         }
 
-        public void createFrontEllipticalCylinder(float center_x, float center_y, float center_z, float radius, float height,float a)
+        public void createTorusRotateY(float center_x, float center_y, float center_z, float r1, float r2, float teta, float a)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+
+            for (float u = 0; u <= 2 * pi; u += pi / 300)
+            {
+                for (float v = 0; v <= 2 * pi; v += pi / 300)
+                {
+                    temp_vector.X = center_x + ((r1 + r2 * (float)Math.Cos(v)) * (float)Math.Cos(u) * (float)Math.Cos(teta)) + (r2 * (float)Math.Sin(v) * (float)Math.Sin(teta));
+                    temp_vector.Y = center_y + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Sin(u);
+                    temp_vector.Z = center_z + (r2 * (float)Math.Sin(v) * (float)Math.Cos(teta)) - ((r1 + r2 * (float)Math.Cos(v)) * (float)Math.Cos(u) * (float)Math.Sin(teta));
+                    _vertices.Add(temp_vector);
+                }
+            }
+        }
+        public void createTorusRotateX(float center_x, float center_y, float center_z, float r1, float r2, float teta)
+        {
+            _centerPosition.X = center_x;
+            _centerPosition.Y = center_y;
+            _centerPosition.Z = center_z;
+
+            float pi = (float)Math.PI;
+            Vector3 temp_vector;
+
+            for (float u = 0; u <= 2 * pi; u += pi / 300)
+            {
+                for (float v = 0; v <= 2 * pi; v += pi / 300)
+                {
+                    temp_vector.X = center_x + (r1 + r2 * (float)Math.Cos(v)) * (float)Math.Cos(u);
+                    temp_vector.Y = center_y + ((r1 + r2 * (float)Math.Cos(v)) * (float)Math.Sin(u) * (float)Math.Cos(teta)) - (r2 * (float)Math.Sin(v) * (float)Math.Sin(teta));
+                    temp_vector.Z = center_z + ((r1 + r2 * (float)Math.Cos(v)) * (float)Math.Sin(u) * (float)Math.Sin(teta)) + (r2 * (float)Math.Sin(v) * (float)Math.Cos(teta));
+                    _vertices.Add(temp_vector);
+                }
+            }
+        }
+
+        public void createFrontEllipticalCylinder(float center_x, float center_y, float center_z, float radius, float height, float a)
         {
             _centerPosition.X = center_x;
             _centerPosition.Y = center_y;
@@ -346,7 +372,7 @@ namespace Minion
             Vector3 temp_vector;
             for (float deg = 0; deg <= 360; deg++)
             {
-                for (float t = 0; t <= height; t += height/2)
+                for (float t = 0; t <= height; t += height / 2)
                 {
                     temp_vector.X = center_x + a * radius * (float)Math.Cos(deg);
                     temp_vector.Y = center_y + t;
@@ -381,8 +407,8 @@ namespace Minion
         {
             Time = Math.Clamp(Time, 0, 1);
             float time = 1 - Time;
-            Vector3 result =   
-            ((float)Math.Pow(time, 3) * _vertice_bezier[0]) 
+            Vector3 result =
+            ((float)Math.Pow(time, 3) * _vertice_bezier[0])
             + (3 * time * time * Time * _vertice_bezier[1])
             + (3 * time * Time * Time * _vertice_bezier[2])
             + (Time * Time * Time * _vertice_bezier[3]);
@@ -395,7 +421,7 @@ namespace Minion
 
             for (float i = 0; i < 1.0f; i += 0.01f)
             {
-                
+
                 time = i;
                 segments.Add(getSegment(time));
             }
@@ -412,124 +438,7 @@ namespace Minion
             _vertice_bezier.Add(new Vector3(x1, y1, z1));
 
         }
-        public void createBoxVertices(float x, float y, float z,float p, float l, float t)
-        {
-            //biar lebih fleksibel jangan inisialiasi posisi dan 
-            //panjang kotak didalam tapi ditaruh ke parameter
-            float _positionX = x;
-            float _positionY = y;
-            float _positionZ = z;
-
-            
-
-            //Buat temporary vector
-            Vector3 temp_vector;
-            //1. Inisialisasi vertex
-            // Titik 1
-            temp_vector.X = _positionX - p / 2.0f; // x 
-            temp_vector.Y = _positionY + t / 2.0f; // y
-            temp_vector.Z = _positionZ - l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-
-            // Titik 2
-            temp_vector.X = _positionX + p / 2.0f; // x
-            temp_vector.Y = _positionY + t / 2.0f; // y
-            temp_vector.Z = _positionZ - l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-            // Titik 3
-            temp_vector.X = _positionX - p / 2.0f; // x
-            temp_vector.Y = _positionY - t / 2.0f; // y
-            temp_vector.Z = _positionZ - l / 2.0f; // z
-            _vertices.Add(temp_vector);
-
-            // Titik 4
-            temp_vector.X = _positionX + p / 2.0f; // x
-            temp_vector.Y = _positionY - t / 2.0f; // y
-            temp_vector.Z = _positionZ - l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-
-            // Titik 5
-            temp_vector.X = _positionX - p / 2.0f; // x
-            temp_vector.Y = _positionY + t / 2.0f; // y
-            temp_vector.Z = _positionZ + l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-
-            // Titik 6
-            temp_vector.X = _positionX + p / 2.0f; // x
-            temp_vector.Y = _positionY + t / 2.0f; // y
-            temp_vector.Z = _positionZ + l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-
-            // Titik 7
-            temp_vector.X = _positionX - p / 2.0f; // x
-            temp_vector.Y = _positionY - t / 2.0f; // y
-            temp_vector.Z = _positionZ + l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-
-            // Titik 8
-            temp_vector.X = _positionX + p / 2.0f; // x
-            temp_vector.Y = _positionY - t / 2.0f; // y
-            temp_vector.Z = _positionZ + l / 2.0f; // z
-
-            _vertices.Add(temp_vector);
-            //2. Inisialisasi index vertex
-            verticesIndices = new List<uint> {
-                // Segitiga Depan 1
-                0, 1, 2,
-                // Segitiga Depan 2
-                1, 2, 3,
-                // Segitiga Atas 1
-                0, 4, 5,
-                // Segitiga Atas 2
-                0, 1, 5,
-                // Segitiga Kanan 1
-                1, 3, 5,
-                // Segitiga Kanan 2
-                3, 5, 7,
-                // Segitiga Kiri 1
-                0, 2, 4,
-                // Segitiga Kiri 2
-                2, 4, 6,
-                // Segitiga Belakang 1
-                4, 5, 6,
-                // Segitiga Belakang 2
-                5, 6, 7,
-                // Segitiga Bawah 1
-                2, 3, 6,
-                // Segitiga Bawah 2
-                3, 6, 7
-            };
-
-        }
-
-        public void createEllipticParaboloid(float center_x, float center_y, float center_z, float a, float b,float h)
-        {
-            _centerPosition.X = center_x;
-            _centerPosition.Y = center_y;
-            _centerPosition.Z = center_z;
-
-            Vector3 temp_vector;
-            float pi = (float)Math.PI;
-            for(float v = 0; v <= 2*pi; v += pi / 720)
-            {
-                for(float u = 0; u <= h; u+= pi / 720)
-                {
-                    temp_vector = new Vector3();
-                    temp_vector.X = center_x + (a * (float)Math.Sqrt(u) * (float)Math.Cos(v));
-                    temp_vector.Y = center_y + u;
-                    temp_vector.Z = center_z + (b * (float)Math.Sqrt(u) * (float)Math.Sin(v));
-                    _vertices.Add(temp_vector);
-                }
-            }
-        }
 
     }
 }
 
-    

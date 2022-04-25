@@ -16,13 +16,20 @@ namespace Minion
     class Window : GameWindow
     {
         BabyMinion babyMinion;
+        LifeguardMinion lifeguardMinion;
+        IndonesianMinion indonesianMinion;
         Environment env;
         Camera camera;
         bool firstMove = true;
         Vector2 lastPos;
         bool cameraMode = true;
-        Matrix4 _minionModel = Matrix4.Identity;
+        Matrix4 _babyMinionModel = Matrix4.Identity;
         Matrix4 _environmentModel = Matrix4.Identity;
+        Matrix4 _lifeguardMinionModel = Matrix4.Identity;
+        Matrix4 _indonesianMinionModel = Matrix4.Identity;
+        bool animateBabyMinion = true;
+        bool animateIndonesianMinion = true;
+        bool animateLifeguardMinion = true;
         List<Object> rotatorEye = new List<Object>();
         List<Object> rotatorRightArm = new List<Object>();
         List<Object> rotatorLeftArm = new List<Object>();
@@ -59,6 +66,8 @@ namespace Minion
 
             babyMinion = new BabyMinion();
             env = new Environment();
+            lifeguardMinion = new LifeguardMinion();
+            indonesianMinion = new IndonesianMinion();
 
         }
 
@@ -74,11 +83,26 @@ namespace Minion
 
             env.Load();
             babyMinion.Load();
+            lifeguardMinion.Load();
+            indonesianMinion.Load();
 
-            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
-            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
-            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
-            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
+            _babyMinionModel = _babyMinionModel * Matrix4.CreateScale(0.7f);
+            _babyMinionModel = _babyMinionModel * Matrix4.CreateScale(0.7f);
+            _babyMinionModel = _babyMinionModel * Matrix4.CreateScale(0.7f);
+            _babyMinionModel = _babyMinionModel * Matrix4.CreateScale(0.7f);
+            _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(-0.5f, 0.015f, 0.4f);
+
+            _lifeguardMinionModel = _lifeguardMinionModel * Matrix4.CreateScale(0.7f);
+            _lifeguardMinionModel = _lifeguardMinionModel * Matrix4.CreateScale(0.7f);
+            _lifeguardMinionModel = _lifeguardMinionModel * Matrix4.CreateScale(0.7f);
+            _lifeguardMinionModel = _lifeguardMinionModel * Matrix4.CreateScale(0.7f);
+            _lifeguardMinionModel = _lifeguardMinionModel * Matrix4.CreateTranslation(2.5f, 0.0f, 1.5f);
+
+            _indonesianMinionModel = _indonesianMinionModel * Matrix4.CreateScale(0.7f);
+            _indonesianMinionModel = _indonesianMinionModel * Matrix4.CreateScale(0.7f);
+            _indonesianMinionModel = _indonesianMinionModel * Matrix4.CreateScale(0.7f);
+            _indonesianMinionModel = _indonesianMinionModel * Matrix4.CreateScale(0.7f);
+            _indonesianMinionModel = _indonesianMinionModel * Matrix4.CreateTranslation(0.5f, 0.015f, 0.4f);
         }
         protected override void OnResize(ResizeEventArgs e)
         {
@@ -166,36 +190,36 @@ namespace Minion
                 //Maju
                 if (KeyboardState.IsKeyDown(Keys.W))
                 {
-                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, 0.0f, 0.02f);
+                    _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(0.0f, 0.0f, 0.02f);
                     rotatorWalkZ = babyMinion.WalkZ((bool)rotatorWalkZ[0],(float)rotatorWalkZ[1]);
                 }
                 //Mundur
                 if (KeyboardState.IsKeyDown(Keys.S))
                 {
-                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, 0.0f, -0.02f);
+                    _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(0.0f, 0.0f, -0.02f);
                     rotatorWalkZ = babyMinion.WalkZ((bool)rotatorWalkZ[0], (float)rotatorWalkZ[1]);
                 }
                 //Kanan
                 if (KeyboardState.IsKeyDown(Keys.D))
                 {
-                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.02f, 0.0f, 0.0f);
+                    _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(0.02f, 0.0f, 0.0f);
                     rotatorWalkX = babyMinion.WalkX((bool)rotatorWalkX[0], (float)rotatorWalkX[1]);
                 }
                 //Kiri
                 if (KeyboardState.IsKeyDown(Keys.A))
                 {
-                    _minionModel = _minionModel * Matrix4.CreateTranslation(-0.02f, 0.0f, 0.0f);
+                    _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(-0.02f, 0.0f, 0.0f);
                     rotatorWalkX = babyMinion.WalkX((bool)rotatorWalkX[0], (float)rotatorWalkX[1]);
                 }
                 //Naik
                 if (KeyboardState.IsKeyDown(Keys.Space))
                 {
-                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, 0.015f, 0.0f);
+                    _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(0.0f, 0.015f, 0.0f);
                 }
                 //Turun
                 if (KeyboardState.IsKeyDown(Keys.LeftShift))
                 {
-                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, -0.015f, 0.0f);
+                    _babyMinionModel = _babyMinionModel * Matrix4.CreateTranslation(0.0f, -0.015f, 0.0f);
                 }
                 //Rotate kiri
                 if (KeyboardState.IsKeyDown(Keys.Left))
@@ -219,24 +243,67 @@ namespace Minion
                 }
             }
             
-
+            //Scale down
             if (KeyboardState.IsKeyPressed(Keys.F3))
             {
-                _minionModel = _minionModel * Matrix4.CreateScale(0.9f);
+                _babyMinionModel = _babyMinionModel * Matrix4.CreateScale(0.9f);
                 Console.WriteLine("Scale down");
             }
+            //Scale up
             if (KeyboardState.IsKeyPressed(Keys.F4))
             {
-                _minionModel = _minionModel * Matrix4.CreateScale(1.1f);
+                _babyMinionModel = _babyMinionModel * Matrix4.CreateScale(1.1f);
                 Console.WriteLine("Scale up");
+            }
+            //Animate baby switch
+            if (KeyboardState.IsKeyPressed(Keys.B))
+            {
+                if (animateBabyMinion)
+                {
+                    animateBabyMinion = false;
+                }
+                else animateBabyMinion = true;
+            }
+            //Animate indonesian switch
+            if (KeyboardState.IsKeyPressed(Keys.I))
+            {
+                if (animateIndonesianMinion)
+                {
+                    animateIndonesianMinion = false;
+                }
+                else animateIndonesianMinion = true;
+            }
+            //Animate lifeguard switch
+            if (KeyboardState.IsKeyPressed(Keys.L))
+            {
+                if (animateLifeguardMinion)
+                {
+                    animateLifeguardMinion = false;
+                }
+                else animateLifeguardMinion = true;
             }
 
             rotatorEye = babyMinion.animateEye((bool)rotatorEye[0], (bool)rotatorEye[1], (float)rotatorEye[2]);
             
 
-            babyMinion.Render(_minionModel,camera.GetViewMatrix(),camera.GetProjectionMatrix());
+            babyMinion.Render(_babyMinionModel,camera.GetViewMatrix(),camera.GetProjectionMatrix());
             env.Render(_environmentModel, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-            //_minionModel = babyMinion.automaticAnimate(_minionModel);
+            lifeguardMinion.Render(_lifeguardMinionModel, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+            indonesianMinion.Render(_indonesianMinionModel, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+            if (animateBabyMinion)
+            {
+                _babyMinionModel = babyMinion.automaticAnimate(_babyMinionModel);
+            }
+            if (animateLifeguardMinion)
+            {
+                _lifeguardMinionModel = lifeguardMinion.autoJump(_lifeguardMinionModel);
+            }
+            if (animateIndonesianMinion)
+            {
+                _indonesianMinionModel = indonesianMinion.automaticAnimate(_indonesianMinionModel);
+            }
+            
+            
 
             SwapBuffers();
         }
