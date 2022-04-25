@@ -10,19 +10,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Minion
 {
     class Window : GameWindow
     {
-        Minion minion;
-        float degreeVertical = 0;
-        float degreeHorizontal = 0;
+        BabyMinion babyMinion;
+        Environment env;
         Camera camera;
         bool firstMove = true;
         Vector2 lastPos;
-        Vector3 objectPos = new Vector3(0.0f, 0.0f, 0.0f);
-        float rotationSpeed = 0.5f;
-        Matrix4 temp = Matrix4.Identity;
+        bool cameraMode = true;
+        Matrix4 _minionModel = Matrix4.Identity;
+        Matrix4 _environmentModel = Matrix4.Identity;
+        List<Object> rotatorEye = new List<Object>();
+        List<Object> rotatorRightArm = new List<Object>();
+        List<Object> rotatorLeftArm = new List<Object>();
+        List<Object> rotatorWalkZ = new List<Object>();
+        List<Object> rotatorWalkX = new List<Object>();
+
         static class Constants
         {
             public const string path = "../../../Shaders/";
@@ -33,21 +39,46 @@ namespace Minion
 
         }
 
+        public void setDefault()
+        {
+            rotatorEye.Add(true);
+            rotatorEye.Add(true);
+            rotatorEye.Add(0f);
+
+            rotatorRightArm.Add(true);
+            rotatorRightArm.Add(0f);
+
+            rotatorLeftArm.Add(true);
+            rotatorLeftArm.Add(0f);
+
+            rotatorWalkZ.Add(true);
+            rotatorWalkZ.Add(0f);
+
+            rotatorWalkX.Add(true);
+            rotatorWalkX.Add(0f);
+
+            babyMinion = new BabyMinion();
+            env = new Environment();
+
+        }
+
         protected override void OnLoad()
         {
             base.OnLoad();
-            GL.ClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+            GL.ClearColor(0.52f, 0.8f, 0.92f, 1.0f);
 
-            minion = new Minion();
-            camera = new Camera(new Vector3(0, 0, 1), Size.X / Size.Y);
+            setDefault();
+           
+            camera = new Camera(new Vector3(0, 0.3f, 3.0f), Size.X / Size.Y);
             CursorGrabbed = true;
 
-            minion.Load();
+            env.Load();
+            babyMinion.Load();
 
-            
-
-
-
+            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
+            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
+            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
+            _minionModel = _minionModel * Matrix4.CreateScale(0.7f);
         }
         protected override void OnResize(ResizeEventArgs e)
         {
@@ -62,109 +93,150 @@ namespace Minion
         {
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Matrix4 temp = Matrix4.Identity;
 
-            float cameraSpeed = 0.5f;
-
-
-            if (KeyboardState.IsKeyDown(Keys.N))
-            {
-                var axis = new Vector3(0, 1, 0);
-                camera.Position -= objectPos;
-                camera.Position = Vector3.Transform(
-                    camera.Position,
-                    generateArbRotationMatrix(axis, objectPos, rotationSpeed)
-                    .ExtractRotation());
-                camera.Position += objectPos;
-                camera._front = -Vector3.Normalize(camera.Position
-                    - objectPos);
-            }
-            if (KeyboardState.IsKeyDown(Keys.Comma))
-            {
-                var axis = new Vector3(0, 1, 0);
-                camera.Position -= objectPos;
-                camera.Yaw -= rotationSpeed;
-                camera.Position = Vector3.Transform(camera.Position,
-                    generateArbRotationMatrix(axis, objectPos, -rotationSpeed)
-                    .ExtractRotation());
-                camera.Position += objectPos;
-
-                camera._front = -Vector3.Normalize(camera.Position - objectPos);
-            }
-            if (KeyboardState.IsKeyDown(Keys.K))
-            {
-                var axis = new Vector3(1, 0, 0);
-                camera.Position -= objectPos;
-                camera.Pitch -= rotationSpeed;
-                camera.Position = Vector3.Transform(camera.Position,
-                    generateArbRotationMatrix(axis, objectPos, rotationSpeed).ExtractRotation());
-                camera.Position += objectPos;
-                camera._front = -Vector3.Normalize(camera.Position - objectPos);
-            }
-            if (KeyboardState.IsKeyDown(Keys.M))
-            {
-                var axis = new Vector3(1, 0, 0);
-                camera.Position -= objectPos;
-                camera.Pitch += rotationSpeed;
-                camera.Position = Vector3.Transform(camera.Position,
-                    generateArbRotationMatrix(axis, objectPos, -rotationSpeed).ExtractRotation());
-                camera.Position += objectPos;
-                camera._front = -Vector3.Normalize(camera.Position - objectPos);
-            }
-            if (KeyboardState.IsKeyDown(Keys.W))
-            {
-                camera.Position += camera.Front * cameraSpeed * (float)args.Time;
-            }
-            if (KeyboardState.IsKeyDown(Keys.S))
-            {
-                camera.Position -= camera.Front * cameraSpeed * (float)args.Time;
-            }
-            if (KeyboardState.IsKeyDown(Keys.D))
-            {
-                camera.Position += camera.Right * cameraSpeed * (float)args.Time;
-            }
-
-
-            if (KeyboardState.IsKeyDown(Keys.A))
-            {
-                camera.Position -= camera.Right * cameraSpeed * (float)args.Time;
-            }
-
-            if (KeyboardState.IsKeyDown(Keys.Space))
-            {
-                camera.Position += camera.Up * cameraSpeed * (float)args.Time;
-            }
-
-            if (KeyboardState.IsKeyDown(Keys.LeftShift))
-            {
-                camera.Position -= camera.Up * cameraSpeed * (float)args.Time;
-            }
-
+            float cameraSpeed = 0.9f;
             var mouse = MouseState;
+            var sensitivity = 0.1f;
 
-            var sensitivity = 0.2f;
-
-            if (firstMove)
+            //Mode camera atau object
+            if (KeyboardState.IsKeyPressed(Keys.F5))
             {
-                lastPos = new Vector2(mouse.X, mouse.Y);
-                firstMove = false;
+                if (cameraMode)
+                {
+                    cameraMode = false;
+                }
+                else
+                {
+                    cameraMode = true;
+                }
             }
+
+            //Camera Mode
+            if (cameraMode)
+            {
+                if (firstMove)
+                {
+                    lastPos = new Vector2(mouse.X, mouse.Y);
+                    firstMove = false;
+                }
+                else
+                {
+                    var deltaX = mouse.X - lastPos.X;
+                    var deltaY = mouse.Y - lastPos.Y;
+
+                    lastPos = new Vector2(mouse.X, mouse.Y);
+                    camera.Yaw += deltaX * sensitivity;
+                    camera.Pitch -= deltaY * sensitivity;
+                }
+
+                //Camera maju
+                if (KeyboardState.IsKeyDown(Keys.W))
+                {
+                    camera.Position += camera.Front * cameraSpeed * (float)args.Time;
+                }
+                //Camera mundur
+                if (KeyboardState.IsKeyDown(Keys.S))
+                {
+                    camera.Position -= camera.Front * cameraSpeed * (float)args.Time;
+                }
+                //Camera Kanan
+                if (KeyboardState.IsKeyDown(Keys.D))
+                {
+                    camera.Position += camera.Right * cameraSpeed * (float)args.Time;
+                }
+                //Camera Kiri
+                if (KeyboardState.IsKeyDown(Keys.A))
+                {
+                    camera.Position -= camera.Right * cameraSpeed * (float)args.Time;
+                }
+                //Camera naik
+                if (KeyboardState.IsKeyDown(Keys.Space))
+                {
+                    camera.Position += camera.Up * cameraSpeed * (float)args.Time;
+                }
+                //Camera turun
+                if (KeyboardState.IsKeyDown(Keys.LeftShift))
+                {
+                    camera.Position -= camera.Up * cameraSpeed * (float)args.Time;
+                }
+            }
+            //Object Mode
             else
             {
-                var deltaX = mouse.X - lastPos.X;
-                var deltaY = mouse.Y - lastPos.Y;
+                //Maju
+                if (KeyboardState.IsKeyDown(Keys.W))
+                {
+                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, 0.0f, 0.02f);
+                    rotatorWalkZ = babyMinion.WalkZ((bool)rotatorWalkZ[0],(float)rotatorWalkZ[1]);
+                }
+                //Mundur
+                if (KeyboardState.IsKeyDown(Keys.S))
+                {
+                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, 0.0f, -0.02f);
+                    rotatorWalkZ = babyMinion.WalkZ((bool)rotatorWalkZ[0], (float)rotatorWalkZ[1]);
+                }
+                //Kanan
+                if (KeyboardState.IsKeyDown(Keys.D))
+                {
+                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.02f, 0.0f, 0.0f);
+                    rotatorWalkX = babyMinion.WalkX((bool)rotatorWalkX[0], (float)rotatorWalkX[1]);
+                }
+                //Kiri
+                if (KeyboardState.IsKeyDown(Keys.A))
+                {
+                    _minionModel = _minionModel * Matrix4.CreateTranslation(-0.02f, 0.0f, 0.0f);
+                    rotatorWalkX = babyMinion.WalkX((bool)rotatorWalkX[0], (float)rotatorWalkX[1]);
+                }
+                //Naik
+                if (KeyboardState.IsKeyDown(Keys.Space))
+                {
+                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, 0.015f, 0.0f);
+                }
+                //Turun
+                if (KeyboardState.IsKeyDown(Keys.LeftShift))
+                {
+                    _minionModel = _minionModel * Matrix4.CreateTranslation(0.0f, -0.015f, 0.0f);
+                }
+                //Rotate kiri
+                if (KeyboardState.IsKeyDown(Keys.Left))
+                {
+                    babyMinion.rotateAll("left");
+                }
+                //Rotate kanan
+                if (KeyboardState.IsKeyDown(Keys.Right))
+                {
+                    babyMinion.rotateAll("right");
+                }
 
-                lastPos = new Vector2(mouse.X, mouse.Y);
-                camera.Yaw += deltaX * sensitivity;
-                camera.Pitch -= deltaY * sensitivity;
+                //Animasi tangan
+                if (MouseState.IsButtonDown(MouseButton.Left))
+                {
+                    rotatorLeftArm = babyMinion.animateLeftArm((bool)rotatorLeftArm[0], (float)rotatorLeftArm[1]);
+                }
+                if (MouseState.IsButtonDown(MouseButton.Right))
+                {
+                    rotatorRightArm = babyMinion.animateRightArm((bool)rotatorRightArm[0], (float)rotatorRightArm[1]);
+                }
+            }
+            
+
+            if (KeyboardState.IsKeyPressed(Keys.F3))
+            {
+                _minionModel = _minionModel * Matrix4.CreateScale(0.9f);
+                Console.WriteLine("Scale down");
+            }
+            if (KeyboardState.IsKeyPressed(Keys.F4))
+            {
+                _minionModel = _minionModel * Matrix4.CreateScale(1.1f);
+                Console.WriteLine("Scale up");
             }
 
-
-
-
-            minion.Render(temp,camera.GetViewMatrix(),camera.GetProjectionMatrix());
-
+            rotatorEye = babyMinion.animateEye((bool)rotatorEye[0], (bool)rotatorEye[1], (float)rotatorEye[2]);
             
+
+            babyMinion.Render(_minionModel,camera.GetViewMatrix(),camera.GetProjectionMatrix());
+            env.Render(_environmentModel, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+            //_minionModel = babyMinion.automaticAnimate(_minionModel);
 
             SwapBuffers();
         }
@@ -199,7 +271,7 @@ namespace Minion
             return secretFormulaMatix;
         }
 
-
+     
 
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -207,6 +279,8 @@ namespace Minion
             base.OnMouseWheel(e);
             camera.Fov = camera.Fov - e.OffsetY;
         }
+
+        
     }
     
 }

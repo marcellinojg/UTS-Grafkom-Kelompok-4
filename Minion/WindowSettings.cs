@@ -12,7 +12,7 @@ namespace Minion
         {
             var native = new NativeWindowSettings()
             {
-                Size = new OpenTK.Mathematics.Vector2i(800, 800),
+                Size = new OpenTK.Mathematics.Vector2i(1200, 1200),
                 Title = "Minions"
             };
 
